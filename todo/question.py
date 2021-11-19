@@ -65,7 +65,4 @@ input and filter data type should be consistent,
   [Hint: Expected input_data_type == filter_data_type, but received input_data_type:6 != filter_data_type:5.] 
   (at C:\home\workspace\Paddle_release\paddle/fluid/operators/conv_op.cc:211)
 
-
-
-
 """
