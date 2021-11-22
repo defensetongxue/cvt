@@ -5,15 +5,21 @@
 
 更好的解决办法是`fork`enipos，并修改代码使得支持paddle.Tensor 网址： https://github.com/arogozhnikov/einops
 
+
+
+## Block 模块审核测试 中等
+
+目前完成api修改，并修改一些基本的函数
+继续审核并最好能提供测试
+
+
+
+
+# finish
 ## attention模块审核测试 中等
 
 目前完成api修改，并修改一些基本的函数
 
 仍然存在问题 1.timm.models.layers.DropPath 可能不等于Paddle.nn.DropOut,需要格外注意
 
-继续审核并最好能提供测试
-
-## Block 模块审核测试 中等
-
-目前完成api修改，并修改一些基本的函数
 继续审核并最好能提供测试
