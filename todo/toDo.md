@@ -5,9 +5,9 @@
 
 更好的解决办法是`fork`enipos，并修改代码使得支持paddle.Tensor 网址： https://github.com/arogozhnikov/einops
 
-## paddel.cat undefined
 
-## paddel.mouduleList undefined
+## config getconfig
+
 
 ## VisionTransformer 中等
 逐行审查此代码
@@ -17,6 +17,18 @@
 逐行审查此代码
 
 ## 逐个审查api具体参数名
+
+
+
+
+
+
+
+
+
+
+
+
 
 # finish
 ## attention模块审核测试 中等
@@ -32,3 +44,6 @@
 
 目前完成api修改，并修改一些基本的函数
 继续审核并最好能提供测试
+## paddel.cat undefined
+
+## paddel.mouduleList undefined
