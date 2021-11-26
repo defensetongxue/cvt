@@ -11,35 +11,52 @@ from collections import OrderedDict
 import logging
 import os
 
-from config import get_config 
+from config import get_config
 
 import numpy as np
 
-def PaddleRearrange(tensor:paddle.Tensor, pattern: str, **axes_lengths) -> paddle.Tensor:
-    x=np.array(tensor)
-    return paddle.to_tensor(rearrange(x,pattern,**axes_lengths))
+'''
+`rearrange:func` 和 `Rearrange:nn.Layer` 是基于MIT的开源库enipos的函数，但是不支持`paddle.Tonsor`类型的输入。
+
+目前我的解决办法是采用`PaddleRearrange`和`RearrangeLayer`进行包装，先转化为`np.array`作为`rearrange`的输入，最后将输出转化回来。
+
+更好的解决办法是`fork`enipos，并修改代码使得支持paddle.Tensor 网址： https://github.com/arogozhnikov/einops
+'''
+
+
+def PaddleRearrange(tensor: paddle.Tensor, pattern: str, **axes_lengths) -> paddle.Tensor:
+    x = np.array(tensor)
+    return paddle.to_tensor(rearrange(x, pattern, **axes_lengths))
+
+
 class RearrangeLayer(nn.Layer):
     def __init__(self, pattern):
         super().__init__()
-        self.pattern=pattern
-    def forword(self,x:paddle.Tensor):
-        return PaddleRearrange(x,self.pattern)
+        self.pattern = pattern
+
+    def forword(self, x: paddle.Tensor):
+        return PaddleRearrange(x, self.pattern)
 
 
 # From PyTorch internals
 """对repeat进行封装，让代码更加健壮"""
+
+
 def _ntuple(n):
     def parse(x):
-        if isinstance(x, Iterable):#如果已经是转换后的值，直接返回，不需要再做转换操作
+        if isinstance(x, Iterable):  # 如果已经是转换后的值，直接返回，不需要再做转换操作
             return x
         return tuple(repeat(x, n))
 
     return parse
+
+
 to_1tuple = _ntuple(1)
 to_2tuple = _ntuple(2)
 to_3tuple = _ntuple(3)
 to_4tuple = _ntuple(4)
 to_ntuple = _ntuple
+
 
 class LayerNorm(nn.LayerNorm):
     """Subclass torch's LayerNorm to handle fp16."""
@@ -49,9 +66,15 @@ class LayerNorm(nn.LayerNorm):
         ret = super().forward(x.type(paddle.float32))
         return ret.type(orig_type)
 
+
 class QuickGELU(nn.Layer):
+    '''
+    重写GELU函数，降低处理精度，提高处理速度
+    '''
+
     def forward(self, x: paddle.Tensor):
         return x * paddle.sigmoid(1.702 * x)
+
 
 class Mlp(nn.Layer):
     """ MLP module
@@ -64,6 +87,7 @@ class Mlp(nn.Layer):
         dropout1: dropout after fc1
         dropout2: dropout after fc2
     """
+
     def __init__(self,
                  embed_dim,
                  mlp_ratio,
@@ -86,9 +110,9 @@ class Mlp(nn.Layer):
 
     def _init_weights(self):
         weight_attr = paddle.ParamAttr(
-            initializer=nn.initializer.XavierUniform()) #default in pp: xavier
+            initializer=nn.initializer.XavierUniform())  # default in pp: xavier
         bias_attr = paddle.ParamAttr(
-            initializer=nn.initializer.Normal(std=1e-6)) #default in pp: zero
+            initializer=nn.initializer.Normal(std=1e-6))  # default in pp: zero
         return weight_attr, bias_attr
 
     def forward(self, x):
@@ -98,6 +122,7 @@ class Mlp(nn.Layer):
         x = self.fc2(x)
         x = self.dropout2(x)
         return x
+
 
 class ConvEmbed(nn.Layer):
     """ Image to Conv Embedding
@@ -112,7 +137,7 @@ class ConvEmbed(nn.Layer):
                  padding=2,
                  norm_layer=None):
         super().__init__()
-        patch_size = to_2tuple(patch_size)#把patch初始化为一个正方形,这里是(7,7)
+        patch_size = to_2tuple(patch_size)  # 把patch初始化为一个正方形,这里是(7,7)
 
         self.patch_size = patch_size
         self.proj = nn.Conv2D(
@@ -125,13 +150,15 @@ class ConvEmbed(nn.Layer):
 
     def forward(self, x):
         x = self.proj(x)
-        B, C, H, W = x.shape#B个图片H*W的大小 C个通道(example：W==3:红黄蓝)
-        x = PaddleRearrange(x, 'b c h w -> b (h w) c')#对每个图片进行嵌入，相当于对每个图片线性的堆叠
+        B, C, H, W = x.shape  # B个图片H*W的大小 C个通道(example：W==3:红黄蓝)
+        # 对每个图片进行嵌入，相当于对每个图片线性的堆叠
+        x = PaddleRearrange(x, 'b c h w -> b (h w) c')
         if self.norm:
             x = self.norm(x)
-        x = PaddleRearrange(x, 'b (h w) c -> b c h w', h=H, w=W)#把x回归原来的形状
+        x = PaddleRearrange(x, 'b (h w) c -> b c h w', h=H, w=W)  # 把x回归原来的形状
 
         return x
+
 
 class Attention(nn.Layer):
     """ Attention module
@@ -150,6 +177,7 @@ class Attention(nn.Layer):
         padding_q=1 calculat q with conv , with paramer paddding
         with_cls_token=True ,if label is given
     """
+
     def __init__(self,
                  dim_in,
                  dim_out,
@@ -167,7 +195,7 @@ class Attention(nn.Layer):
                  **kwargs
                  ):
         super().__init__()
-        #init to save the pararm
+        # init to save the pararm
         self.stride_kv = stride_kv
         self.stride_q = stride_q
         self.dim = dim_out
@@ -211,7 +239,7 @@ class Attention(nn.Layer):
                           method):
         if method == 'dw_bn':
             proj = nn.Sequential(
-                ( nn.Conv2D(
+                (nn.Conv2D(
                     dim_in,
                     dim_in,
                     kernel_size=kernel_size,
@@ -221,11 +249,11 @@ class Attention(nn.Layer):
                     groups=dim_in
                 )),
                 (nn.BatchNorm2D(dim_in)),
-                ( RearrangeLayer('b c h w -> b (h w) c')),
+                (RearrangeLayer('b c h w -> b (h w) c')),
             )
         elif method == 'avg':
             proj = nn.Sequential(
-                ( nn.AvgPool2D(
+                (nn.AvgPool2D(
                     kernel_size=kernel_size,
                     padding=padding,
                     stride=stride,
@@ -241,25 +269,25 @@ class Attention(nn.Layer):
         return proj
 
     def forward_conv(self, x, h, w):
-        if self.with_cls_token: # spilt token from x
+        if self.with_cls_token:  # spilt token from x
             cls_token, x = paddle.split(x, [1, h*w], 1)
 
-        x =  PaddleRearrange(x, 'b (h w) c -> b c h w', h=h, w=w)
+        x = PaddleRearrange(x, 'b (h w) c -> b c h w', h=h, w=w)
 
         if self.conv_proj_q is not None:
             q = self.conv_proj_q(x)
         else:
-            q =  PaddleRearrange(x, 'b c h w -> b (h w) c')
+            q = PaddleRearrange(x, 'b c h w -> b (h w) c')
 
         if self.conv_proj_k is not None:
             k = self.conv_proj_k(x)
         else:
-            k =  PaddleRearrange(x, 'b c h w -> b (h w) c')
+            k = PaddleRearrange(x, 'b c h w -> b (h w) c')
 
         if self.conv_proj_v is not None:
             v = self.conv_proj_v(x)
         else:
-            v =  PaddleRearrange(x, 'b c h w -> b (h w) c')
+            v = PaddleRearrange(x, 'b c h w -> b (h w) c')
 
         if self.with_cls_token:
             q = paddle.gather(cls_token, q, dim=1)
@@ -273,29 +301,37 @@ class Attention(nn.Layer):
             self.conv_proj_q is not None
             or self.conv_proj_k is not None
             or self.conv_proj_v is not None
-        ):#if not generate q,k,v with Linear param
+        ):  # if not generate q,k,v with Linear param
             q, k, v = self.forward_conv(x, h, w)
-        #now q,k,v is b (h w) c
-        q =  PaddleRearrange(self.proj_q(q), 'b t (h d) -> b h t d', h=self.num_heads)#先扩宽token的维度，然后再实现mult-head，最后的结构是’b,h,t,d‘
-        k =  PaddleRearrange(self.proj_k(k), 'b t (h d) -> b h t d', h=self.num_heads)
-        v =  PaddleRearrange(self.proj_v(v), 'b t (h d) -> b h t d', h=self.num_heads)
+        # now q,k,v is b (h w) c
+        # 先扩宽token的维度，然后再实现mult-head，最后的结构是’b,h,t,d‘
+        q = PaddleRearrange(self.proj_q(
+            q), 'b t (h d) -> b h t d', h=self.num_heads)
+        k = PaddleRearrange(self.proj_k(
+            k), 'b t (h d) -> b h t d', h=self.num_heads)
+        v = PaddleRearrange(self.proj_v(
+            v), 'b t (h d) -> b h t d', h=self.num_heads)
 
-        attn_score = paddle.einsum('bhlk,bhtk->bhlt', [q, k]) * self.scale # 先按照axis=3乘，后*scale，实现q*k/sqort(d_k),
+        # 先按照axis=3乘，后*scale，实现q*k/sqort(d_k),
+        attn_score = paddle.einsum('bhlk,bhtk->bhlt', [q, k]) * self.scale
         attn = nn.functional.softmax(attn_score, axis=-1)
         attn = self.attn_drop(attn)
-        x = paddle.einsum('bhlt,bhtv->bhlv', [attn, v]) # 将attention得到概率值与value信息值相乘得到结果，结构是，b,h,t,d
-        x =  PaddleRearrange(x, 'b h t d -> b t (h d)')
+        # 将attention得到概率值与value信息值相乘得到结果，结构是，b,h,t,d
+        x = paddle.einsum('bhlt,bhtv->bhlv', [attn, v])
+        x = PaddleRearrange(x, 'b h t d -> b t (h d)')
 
         x = self.proj(x)
         x = self.proj_drop(x)
 
-        return x#b,t,(h,d)
+        return x  # b,t,(h,d)
+
 
 class Block(nn.Layer):
     ''' 
     每一个Block都是
     token -> multihead attention ( reshape token to a grap) ->Mlp->token
     '''
+
     def __init__(self,
                  dim_in,
                  dim_out,
@@ -317,11 +353,11 @@ class Block(nn.Layer):
             dim_in, dim_out, num_heads, qkv_bias, attn_drop, drop,
             **kwargs
         )
-        if drop_path>0. :
-            self.drop_path=nn.Dropout(drop_path)
+        if drop_path > 0.:
+            self.drop_path = nn.Dropout(drop_path)
         else:
-            self.drop_path=nn.Identity()
-        
+            self.drop_path = nn.Identity()
+
         self.norm2 = norm_layer(dim_out)
         self.mlp = Mlp(
             dim_in,
@@ -339,9 +375,18 @@ class Block(nn.Layer):
 
         return x
 
+
 class VisionTransformer(nn.Layer):
     """ Vision Transformer with support for patch or hybrid CNN input stage
+
+        输入是图片，输出是特征图和cls_token
+        图片数据先经过ConvEmbed，得到一个特征图
+        然后这个特征图会被reshape成token
+        这个token会组合上cls_token，一起送入堆叠Block中，输出token
+        最后会将这个token分离出cls_token和图片数据token，然后将图片数据reshape成图片数据的特征图
+
     """
+
     def __init__(self,
                  patch_size=16,
                  patch_stride=16,
@@ -360,7 +405,8 @@ class VisionTransformer(nn.Layer):
                  init='trunc_norm',
                  **kwargs):
         super().__init__()
-        self.num_features = self.embed_dim = embed_dim  # num_features for consistency with other models
+        # num_features for consistency with other models
+        self.num_features = self.embed_dim = embed_dim
 
         self.rearrage = None
 
@@ -375,13 +421,14 @@ class VisionTransformer(nn.Layer):
 
         with_cls_token = kwargs['with_cls_token']
         if with_cls_token:
-            trun_init=nn.initializer.TruncatedNormal(std=0.02)
+            trun_init = nn.initializer.TruncatedNormal(std=0.02)
             trun_init(self.cls_token)
         else:
             self.cls_token = None
-            
+
         self.pos_drop = nn.Dropout(p=drop_rate)
-        dpr = [x.item() for x in paddle.linspace(0, drop_path_rate, depth)]  # stochastic depth decay rule
+        # stochastic depth decay rule
+        dpr = [x.item() for x in paddle.linspace(0, drop_path_rate, depth)]
 
         blocks = []
         for j in range(depth):
@@ -402,8 +449,6 @@ class VisionTransformer(nn.Layer):
             )
         self.blocks = nn.LayerList(blocks)
 
-        
-
         if init == 'xavier':
             self.apply(self._init_weights_xavier)
         else:
@@ -412,31 +457,31 @@ class VisionTransformer(nn.Layer):
     def _init_weights_trunc_normal(self, m):
         if isinstance(m, nn.Linear):
             logging.info('=> init weight of Linear from trunc norm')
-            trun_init=nn.initializer.TruncatedNormal(std=0.02)
+            trun_init = nn.initializer.TruncatedNormal(std=0.02)
             trun_init(m.weight)
             if m.bias is not None:
                 logging.info('=> init bias of Linear to zeros')
-                zeros=nn.initializer.Constant(0.)
+                zeros = nn.initializer.Constant(0.)
                 zeros(m.bias)
         elif isinstance(m, (nn.LayerNorm, nn.BatchNorm2D)):
-            zeros=nn.initializer.Constant(0.)
+            zeros = nn.initializer.Constant(0.)
             zeros(m.bias)
-            ones=nn.initializer.Constant(1)
+            ones = nn.initializer.Constant(1)
             ones(m.weight)
 
     def _init_weights_xavier(self, m):
         if isinstance(m, nn.Linear):
             logging.info('=> init weight of Linear from xavier uniform')
-            xavier_init=nn.initializer.XavierNormal()
+            xavier_init = nn.initializer.XavierNormal()
             xavier_init(m.weight)
             if m.bias is not None:
                 logging.info('=> init bias of Linear to zeros')
-                zeros=nn.initializer.Constant(0.)
+                zeros = nn.initializer.Constant(0.)
             zeros(m.bias)
         elif isinstance(m, (nn.LayerNorm, nn.BatchNorm2D)):
-            zeros=nn.initializer.Constant(0.)
+            zeros = nn.initializer.Constant(0.)
             zeros(m.bias)
-            ones=nn.initializer.Constant(1)
+            ones = nn.initializer.Constant(1)
             ones(m.weight)
 
     def forward(self, x):
@@ -462,6 +507,7 @@ class VisionTransformer(nn.Layer):
 
         return x, cls_tokens
 
+
 class ConvolutionalVisionTransformer(nn.Layer):
     def __init__(self,
                  in_chans=3,
@@ -477,23 +523,23 @@ class ConvolutionalVisionTransformer(nn.Layer):
         for i in range(self.num_stages):
             kwargs = {
                 'patch_size': spec.PATCH_SIZE,
-                'patch_stride': spec.PATCH_STRIDE ,
-                'patch_padding': spec.PATCH_PADDING ,
-                'embed_dim': spec.DIM_EMBED ,
-                'depth': spec.DEPTH ,
-                'num_heads': spec.NUM_HEADS ,
-                'mlp_ratio': spec.MLP_RATIO ,
-                'qkv_bias': spec.QKV_BIAS ,
-                'drop_rate': spec.DROP_RATE ,
-                'attn_drop_rate': spec.ATTN_DROP_RATE ,
+                'patch_stride': spec.PATCH_STRIDE,
+                'patch_padding': spec.PATCH_PADDING,
+                'embed_dim': spec.DIM_EMBED,
+                'depth': spec.DEPTH,
+                'num_heads': spec.NUM_HEADS,
+                'mlp_ratio': spec.MLP_RATIO,
+                'qkv_bias': spec.QKV_BIAS,
+                'drop_rate': spec.DROP_RATE,
+                'attn_drop_rate': spec.ATTN_DROP_RATE,
                 'drop_path_rate': spec.DROP_PATH_RATE,
                 'with_cls_token': spec.WITH_CLS_TOKEN,
                 'method': spec.QKV_PROJ_METHOD,
-                'kernel_size': spec.KERNEL_QKV ,
-                'padding_q': spec.PADDING_Q ,
-                'padding_kv': spec.PADDING_KV ,
-                'stride_kv': spec.STRIDE_KV ,
-                'stride_q': spec.STRIDE_Q ,
+                'kernel_size': spec.KERNEL_QKV,
+                'padding_q': spec.PADDING_Q,
+                'padding_kv': spec.PADDING_KV,
+                'stride_kv': spec.STRIDE_KV,
+                'stride_q': spec.STRIDE_Q,
             }
 
             stage = VisionTransformer(
@@ -512,8 +558,9 @@ class ConvolutionalVisionTransformer(nn.Layer):
         self.cls_token = spec.WITH_CLS_TOKEN
 
         # Classifier head
-        self.head = nn.Linear(dim_embed, num_classes) if num_classes > 0 else nn.Identity()
-        trunc_init=nn.initializer.TruncatedNormal(std=0.02)
+        self.head = nn.Linear(
+            dim_embed, num_classes) if num_classes > 0 else nn.Identity()
+        trunc_init = nn.initializer.TruncatedNormal(std=0.02)
         trunc_init(self.head.weight)
 
     def init_weights(self, pretrained='', pretrained_layers=[], verbose=True):
@@ -528,8 +575,8 @@ class ConvolutionalVisionTransformer(nn.Layer):
             need_init_state_dict = {}
             for k, v in pretrained_dict.items():
                 need_init = (
-                        k.split('.')[0] in pretrained_layers
-                        or pretrained_layers[0] is '*'
+                    k.split('.')[0] in pretrained_layers
+                    or pretrained_layers[0] is '*'
                 )
                 if need_init:
                     if verbose:
@@ -567,6 +614,7 @@ class ConvolutionalVisionTransformer(nn.Layer):
 
                     need_init_state_dict[k] = v
             self.load_state_dict(need_init_state_dict, strict=False)
+
     def forward_features(self, x):
         for i in range(self.num_stages):
             x, cls_tokens = getattr(self, f'stage{i}')(x)
@@ -588,20 +636,20 @@ class ConvolutionalVisionTransformer(nn.Layer):
         return x
 
 
-
 def generate_model(config):
     if config.MODEL.ACT_LAYER == 'nn.GELU':
-        act_layer=nn.GELU
+        act_layer = nn.GELU
     if config.MODEL.NORM_LAYER == 'nn.LayerNorm':
-        norm_layer=nn.LayerNorm
-    model=ConvolutionalVisionTransformer(
-                 in_chans=config.DATA.IN_CHANS,
-                 num_classes=config.MODEL.NUM_CLASSES,
-                 act_layer=act_layer ,
-                 norm_layer=norm_layer,
-                 init=config.MODEL.INIT ,
-                 spec=config.SPEC)
+        norm_layer = nn.LayerNorm
+    model = ConvolutionalVisionTransformer(
+        in_chans=config.DATA.IN_CHANS,
+        num_classes=config.MODEL.NUM_CLASSES,
+        act_layer=act_layer,
+        norm_layer=norm_layer,
+        init=config.MODEL.INIT,
+        spec=config.SPEC)
     return model
 
-config=get_config()
-x=generate_model(config)
+
+config = get_config()
+x = generate_model(config)
