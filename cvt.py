@@ -263,6 +263,8 @@ class Attention(nn.Layer):
         x = PaddleRearrange(x, 'b (h w) c -> b c h w', h=h, w=w)
 
         if self.conv_proj_q is not None:
+            print(x)
+            print(self.conv_proj_q)
             q = self.conv_proj_q(x)
         else:
             q = PaddleRearrange(x, 'b c h w -> b (h w) c')
@@ -396,7 +398,6 @@ class VisionTransformer(nn.Layer):
         # num_features for consistency with other models
         self.num_features = self.embed_dim = embed_dim
 
-        self.rearrage = None
 
         self.patch_embed = ConvEmbed(
             patch_size=patch_size,
@@ -474,9 +475,9 @@ class VisionTransformer(nn.Layer):
 
     def forward(self, x):
         x = self.patch_embed(x)
-        B, C, H, W = x.size()
+        B, C, H, W = x.shape
 
-        x = rearrange(x, 'b c h w -> b (h w) c')
+        x = PaddleRearrange(x, 'b c h w -> b (h w) c')
 
         cls_tokens = None
         if self.cls_token is not None:
@@ -491,7 +492,7 @@ class VisionTransformer(nn.Layer):
 
         if self.cls_token is not None:
             cls_tokens, x = paddle.split(x, [1, H*W], 1)
-        x = rearrange(x, 'b (h w) c -> b c h w', h=H, w=W)
+        x = PaddleRearrange(x, 'b (h w) c -> b c h w', h=H, w=W)
 
         return x, cls_tokens
 
@@ -611,7 +612,7 @@ class ConvolutionalVisionTransformer(nn.Layer):
             x = self.norm(cls_tokens)
             x = paddle.squeeze(x)
         else:
-            x = rearrange(x, 'b c h w -> b (h w) c')
+            x = PaddleRearrange(x, 'b c h w -> b (h w) c')
             x = self.norm(x)
             x = paddle.mean(x, dim=1)
 
