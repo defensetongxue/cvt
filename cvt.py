@@ -23,16 +23,27 @@ import numpy as np
 def PaddleRearrange(tensor: paddle.Tensor, pattern: str, **axes_lengths) -> paddle.Tensor:
     x = np.array(tensor)
     return paddle.to_tensor(rearrange(x, pattern, **axes_lengths))
-
-
+def graph2vector(x:paddle.Tensor):
+        #'b c h w -> b (h w) c'
+        B,C,H,W=x.shape
+        x=paddle.transpose(x,[0,2,3,1])
+        x=paddle.reshape(x,[0,-1,C])
+        return x
+def vector2graph(x:paddle.Tensor,H,W):
+    'b (h w) c -> b c h w'
+    B,L,C=x.shape
+    x=paddle.transpose(x,[B,C,L])
+    x=paddle.reshape(x,[B,C,H,W])
+    return x
+def multitoken(x,h):
+    'b t (h d) -> b h t d'
+    B,T,L=x.shape
+    x=paddle.reshape(x,[B,T,h,-1])
+    x=paddle.transpose(x,[B,h,T,-1])
+    return x
 class RearrangeLayer(nn.Layer):
-    def __init__(self, pattern):
-        super().__init__()
-        self.pattern = pattern
-
     def forword(self, x: paddle.Tensor):
-        return PaddleRearrange(x, self.pattern)
-
+        return graph2vector(x)
 
 # From PyTorch internals
 """对repeat进行封装，让代码更加健壮"""
@@ -140,10 +151,10 @@ class ConvEmbed(nn.Layer):
         x = self.proj(x)
         B, C, H, W = x.shape  # B个图片H*W的大小 C个通道(example：W==3:红黄蓝)
         # 对每个图片进行嵌入，相当于对每个图片线性的堆叠
-        x = PaddleRearrange(x, 'b c h w -> b (h w) c')
+        x=graph2vector(x)
         if self.norm:
             x = self.norm(x)
-        x = PaddleRearrange(x, 'b (h w) c -> b c h w', h=H, w=W)  # 把x回归原来的形状
+        x=vector2graph(x,H,W)  # 把x回归原来的形状
 
         return x
 
@@ -260,24 +271,24 @@ class Attention(nn.Layer):
         if self.with_cls_token:  # spilt token from x
             cls_token, x = paddle.split(x, [1, h*w], 1)
 
-        x = PaddleRearrange(x, 'b (h w) c -> b c h w', h=h, w=w)
+        x = vector2graph(x,h,w)
 
         if self.conv_proj_q is not None:
             print(x)
             print(self.conv_proj_q)
             q = self.conv_proj_q(x)
         else:
-            q = PaddleRearrange(x, 'b c h w -> b (h w) c')
+            q = graph2vector(x)
 
         if self.conv_proj_k is not None:
             k = self.conv_proj_k(x)
         else:
-            k = PaddleRearrange(x, 'b c h w -> b (h w) c')
+            k = graph2vector(x)
 
         if self.conv_proj_v is not None:
             v = self.conv_proj_v(x)
         else:
-            v = PaddleRearrange(x, 'b c h w -> b (h w) c')
+            v = graph2vector(x)
 
         if self.with_cls_token:
             q = paddle.gather(cls_token, q, dim=1)
@@ -295,11 +306,11 @@ class Attention(nn.Layer):
             q, k, v = self.forward_conv(x, h, w)
         # now q,k,v is b (h w) c
         # 先扩宽token的维度，然后再实现mult-head，最后的结构是’b,h,t,d‘
-        q = PaddleRearrange(self.proj_q(
+        q = multitoken(self.proj_q(
             q), 'b t (h d) -> b h t d', h=self.num_heads)
-        k = PaddleRearrange(self.proj_k(
+        k = multitoken(self.proj_k(
             k), 'b t (h d) -> b h t d', h=self.num_heads)
-        v = PaddleRearrange(self.proj_v(
+        v = multitoken(self.proj_v(
             v), 'b t (h d) -> b h t d', h=self.num_heads)
 
         # 先按照axis=3乘，后*scale，实现q*k/sqort(d_k),
@@ -477,7 +488,7 @@ class VisionTransformer(nn.Layer):
         x = self.patch_embed(x)
         B, C, H, W = x.shape
 
-        x = PaddleRearrange(x, 'b c h w -> b (h w) c')
+        x = graph2vector(x, 'b c h w -> b (h w) c')
 
         cls_tokens = None
         if self.cls_token is not None:
@@ -492,7 +503,7 @@ class VisionTransformer(nn.Layer):
 
         if self.cls_token is not None:
             cls_tokens, x = paddle.split(x, [1, H*W], 1)
-        x = PaddleRearrange(x, 'b (h w) c -> b c h w', h=H, w=W)
+        x = vector2graph(x,  H, W)
 
         return x, cls_tokens
 
@@ -612,7 +623,7 @@ class ConvolutionalVisionTransformer(nn.Layer):
             x = self.norm(cls_tokens)
             x = paddle.squeeze(x)
         else:
-            x = PaddleRearrange(x, 'b c h w -> b (h w) c')
+            x = graph2vector(x, 'b c h w -> b (h w) c')
             x = self.norm(x)
             x = paddle.mean(x, dim=1)
 
