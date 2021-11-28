@@ -1,52 +1,41 @@
 import paddle
 import paddle.nn as nn
 
-from einops import rearrange
 
 from collections.abc import Iterable
 from numpy import repeat
 
 import logging
 import os
-
 import numpy as np
+import paddlenlp
+def graph2vector(x: paddle.Tensor):
+    #'b c h w -> b (h w) c'
+    B, C, H, W = x.shape
+    x = paddle.transpose(x, [0, 2, 3, 1])
+    x = paddle.reshape(x, [B, H*W, C])
+    return x
 
-'''
-`rearrange:func` 和 `Rearrange:nn.Layer` 是基于MIT的开源库enipos的函数，但是不支持`paddle.Tonsor`类型的输入。
 
-目前我的解决办法是采用`PaddleRearrange`和`RearrangeLayer`进行包装，先转化为`np.array`作为`rearrange`的输入，最后将输出转化回来。
-
-更好的解决办法是`fork`enipos，并修改代码使得支持paddle.Tensor 网址： https://github.com/arogozhnikov/einops
-'''
-
-
-def PaddleRearrange(tensor: paddle.Tensor, pattern: str, **axes_lengths) -> paddle.Tensor:
-    x = np.array(tensor)
-    return paddle.to_tensor(rearrange(x, pattern, **axes_lengths))
-def graph2vector(x:paddle.Tensor):
-        #'b c h w -> b (h w) c'
-        B,C,H,W=x.shape
-        x=paddle.transpose(x,[0,2,3,1])
-        x=paddle.reshape(x,[0,-1,C])
-        return x
-def vector2graph(x:paddle.Tensor,H,W):
+def vector2graph(x: paddle.Tensor, H, W):
     'b (h w) c -> b c h w'
-    B,L,C=x.shape
-    x=paddle.transpose(x,[B,C,L])
-    x=paddle.reshape(x,[B,C,H,W])
+    B, L, C = x.shape
+    x = paddle.transpose(x, [0, 2, 1])
+    x = paddle.reshape(x, [B, C, H, W])
     return x
-def multitoken(x,h):
-    'b t (h d) -> b h t d'
-    B,T,L=x.shape
-    x=paddle.reshape(x,[B,T,h,-1])
-    x=paddle.transpose(x,[B,h,T,-1])
-    return x
-class RearrangeLayer(nn.Layer):
-    def forword(self, x: paddle.Tensor):
-        return graph2vector(x)
 
-# From PyTorch internals
-"""对repeat进行封装，让代码更加健壮"""
+
+def multitoken(x, h):
+    'b t (h d) -> b h t d'
+    B, T, L = x.shape
+    x = paddle.reshape(x, [B, T, h, -1])
+    x = paddle.transpose(x, [0, 2, 1, 3])
+    return x
+
+
+class RearrangeLayer(nn.Layer):
+    def forward(self, x: paddle.Tensor):
+        return graph2vector(x)
 
 
 def _ntuple(n):
@@ -65,14 +54,13 @@ to_4tuple = _ntuple(4)
 to_ntuple = _ntuple
 
 
-
 class QuickGELU(nn.Layer):
     '''
     重写GELU函数，降低处理精度，提高处理速度
     '''
 
     def forward(self, x: paddle.Tensor):
-        return x * paddle.sigmoid(1.702 * x)
+        return x * nn.functional.sigmoid(1.702 * x)
 
 
 class Mlp(nn.Layer):
@@ -90,6 +78,7 @@ class Mlp(nn.Layer):
     def __init__(self,
                  embed_dim,
                  mlp_ratio,
+                 act_layer=nn.GELU,
                  dropout=0.):
         super().__init__()
         w_attr_1, b_attr_1 = self._init_weights()
@@ -103,7 +92,7 @@ class Mlp(nn.Layer):
                              embed_dim,
                              weight_attr=w_attr_2,
                              bias_attr=b_attr_2)
-        self.act = nn.GELU()
+        self.act = act_layer()
         self.dropout1 = nn.Dropout(dropout)
         self.dropout2 = nn.Dropout(dropout)
 
@@ -146,15 +135,15 @@ class ConvEmbed(nn.Layer):
             padding=padding
         )
         self.norm = norm_layer(embed_dim) if norm_layer else None
-        
+
     def forward(self, x):
         x = self.proj(x)
         B, C, H, W = x.shape  # B个图片H*W的大小 C个通道(example：W==3:红黄蓝)
         # 对每个图片进行嵌入，相当于对每个图片线性的堆叠
-        x=graph2vector(x)
+        x = graph2vector(x)
         if self.norm:
             x = self.norm(x)
-        x=vector2graph(x,H,W)  # 把x回归原来的形状
+        x = vector2graph(x, H, W)  # 把x回归原来的形状
 
         return x
 
@@ -165,9 +154,9 @@ class Attention(nn.Layer):
         dim_in: numebr of input dim
         dim_out: number of output dum
         num_heads: 
-        qkv_bias=False
-        attn_drop=0.,
-        proj_drop=0.
+        qkv_bias:
+        attn_drop
+        proj_drop
         method='dw_bn' generate projection method 
         kernel_size=3  conv kernel size 
         stride_kv=1 calculat k,v with conv , with paramer stride 
@@ -248,7 +237,7 @@ class Attention(nn.Layer):
                     groups=dim_in
                 )),
                 (nn.BatchNorm2D(dim_in)),
-                (RearrangeLayer('b c h w -> b (h w) c')),
+                (RearrangeLayer()),
             )
         elif method == 'avg':
             proj = nn.Sequential(
@@ -258,7 +247,7 @@ class Attention(nn.Layer):
                     stride=stride,
                     ceil_mode=True
                 )),
-                (RearrangeLayer('b c h w -> b (h w) c')),
+                (RearrangeLayer()),
             )
         elif method == 'linear':
             proj = None
@@ -271,11 +260,9 @@ class Attention(nn.Layer):
         if self.with_cls_token:  # spilt token from x
             cls_token, x = paddle.split(x, [1, h*w], 1)
 
-        x = vector2graph(x,h,w)
+        x = vector2graph(x, h, w)
 
         if self.conv_proj_q is not None:
-            print(x)
-            print(self.conv_proj_q)
             q = self.conv_proj_q(x)
         else:
             q = graph2vector(x)
@@ -291,9 +278,9 @@ class Attention(nn.Layer):
             v = graph2vector(x)
 
         if self.with_cls_token:
-            q = paddle.gather(cls_token, q, dim=1)
-            k = paddle.gather(cls_token, k, dim=1)
-            v = paddle.gather(cls_token, v, dim=1)
+            q = paddle.concat([cls_token, q], axis=1)
+            k = paddle.concat([cls_token, k], axis=1)
+            v = paddle.concat([cls_token, v], axis=1)
 
         return q, k, v
 
@@ -307,19 +294,21 @@ class Attention(nn.Layer):
         # now q,k,v is b (h w) c
         # 先扩宽token的维度，然后再实现mult-head，最后的结构是’b,h,t,d‘
         q = multitoken(self.proj_q(
-            q), 'b t (h d) -> b h t d', h=self.num_heads)
+            q), h=self.num_heads)
         k = multitoken(self.proj_k(
-            k), 'b t (h d) -> b h t d', h=self.num_heads)
+            k),  h=self.num_heads)
         v = multitoken(self.proj_v(
-            v), 'b t (h d) -> b h t d', h=self.num_heads)
+            v),  h=self.num_heads)
 
         # 先按照axis=3乘，后*scale，实现q*k/sqort(d_k),
-        attn_score = paddle.einsum('bhlk,bhtk->bhlt', [q, k]) * self.scale
+        attn_score = paddlenlp.ops.einsum('bhlk,bhtk->bhlt', q, k) * self.scale
         attn = nn.functional.softmax(attn_score, axis=-1)
         attn = self.attn_drop(attn)
         # 将attention得到概率值与value信息值相乘得到结果，结构是，b,h,t,d
-        x = paddle.einsum('bhlt,bhtv->bhlv', [attn, v])
-        x = PaddleRearrange(x, 'b h t d -> b t (h d)')
+        x = paddlenlp.ops.einsum('bhlt,bhtv->bhlv', attn, v)
+        x = paddle.transpose(x, [0, 2, 1, 3])
+        x = paddle.reshape(x, [0, 0, -1])
+        #x = PaddleRearrange(x, 'b h t d -> b t (h d)')
 
         x = self.proj(x)
         x = self.proj_drop(x)
@@ -363,6 +352,7 @@ class Block(nn.Layer):
         self.mlp = Mlp(
             dim_in,
             mlp_ratio,
+            act_layer=act_layer,
             dropout=drop
         )
 
@@ -409,7 +399,6 @@ class VisionTransformer(nn.Layer):
         # num_features for consistency with other models
         self.num_features = self.embed_dim = embed_dim
 
-
         self.patch_embed = ConvEmbed(
             patch_size=patch_size,
             in_chans=in_chans,
@@ -418,7 +407,7 @@ class VisionTransformer(nn.Layer):
             embed_dim=embed_dim,
             norm_layer=norm_layer
         )
-        self.cls_token=paddle.zeros([1, 1, embed_dim])
+        self.cls_token = paddle.zeros([1, 1, embed_dim])
         with_cls_token = kwargs['with_cls_token']
         if with_cls_token:
             trun_init = nn.initializer.TruncatedNormal(std=0.02)
@@ -466,7 +455,7 @@ class VisionTransformer(nn.Layer):
         elif isinstance(m, (nn.LayerNorm, nn.BatchNorm2D)):
             zeros = nn.initializer.Constant(0.)
             zeros(m.bias)
-            ones = nn.initializer.Constant(1)
+            ones = nn.initializer.Constant(1.0)
             ones(m.weight)
 
     def _init_weights_xavier(self, m):
@@ -488,13 +477,13 @@ class VisionTransformer(nn.Layer):
         x = self.patch_embed(x)
         B, C, H, W = x.shape
 
-        x = graph2vector(x, 'b c h w -> b (h w) c')
+        x = graph2vector(x)
 
         cls_tokens = None
         if self.cls_token is not None:
             # stole cls_tokens impl from Phil Wang, thanks
-            cls_tokens = self.cls_token.expand(B, -1, -1)
-            x = paddle.gather(cls_tokens, x, dim=1)
+            cls_tokens = self.cls_token.expand([B, -1, -1])
+            x = paddle.concat([cls_tokens, x], axis=1)
 
         x = self.pos_drop(x)
 
@@ -594,8 +583,8 @@ class ConvolutionalVisionTransformer(nn.Layer):
 
                         posemb_tok, posemb_grid = v[:, :1], v[0, 1:]
 
-                        gs_old = int(np.sqrt(len(posemb_grid)))
-                        gs_new = int(np.sqrt(ntok_new))
+                        gs_old = int(paddle.sqrt(len(posemb_grid)))
+                        gs_new = int(paddle.sqrt(ntok_new))
 
                         logging.info(
                             '=> load_pretrained: grid-size from {} to {}'
@@ -609,7 +598,7 @@ class ConvolutionalVisionTransformer(nn.Layer):
                         )
                         posemb_grid = posemb_grid.reshape(1, gs_new ** 2, -1)
                         v = paddle.to_tensor(
-                            np.concatenate([posemb_tok, posemb_grid], axis=1)
+                            paddle.concat([posemb_tok, posemb_grid], axis=1)
                         )
 
                     need_init_state_dict[k] = v
@@ -637,7 +626,7 @@ class ConvolutionalVisionTransformer(nn.Layer):
 
 
 def generate_model(config):
-    modelspec=config.MODEL.SPEC
+    modelspec = config.MODEL.SPEC
     model = ConvolutionalVisionTransformer(
         in_chans=3,
         num_classes=config.MODEL.NUM_CLASSES,
@@ -646,4 +635,3 @@ def generate_model(config):
         init=getattr(modelspec, 'INIT', 'trunc_norm'),
         spec=modelspec)
     return model
-
