@@ -1,6 +1,8 @@
 from functools import partial
 from itertools import repeat
-from torch._six import container_abcs
+
+
+from collections.abc import Iterable
 
 import logging
 import os
@@ -21,7 +23,7 @@ from timm.models.layers import DropPath, trunc_normal_
 # From PyTorch internals
 def _ntuple(n):
     def parse(x):
-        if isinstance(x, container_abcs.Iterable):
+        if isinstance(x, Iterable):
             return x
         return tuple(repeat(x, n))
 
@@ -65,6 +67,8 @@ class Mlp(nn.Module):
         self.drop = nn.Dropout(drop)
 
     def forward(self, x):
+        #print('mlp:')
+        #print(x)
         x = self.fc1(x)
         x = self.act(x)
         x = self.drop(x)
@@ -187,6 +191,8 @@ class Attention(nn.Module):
         return q, k, v
 
     def forward(self, x, h, w):
+        #print('att:')
+        #print(x)
         if (
             self.conv_proj_q is not None
             or self.conv_proj_k is not None
@@ -249,6 +255,8 @@ class Block(nn.Module):
         )
 
     def forward(self, x, h, w):
+        #print('layerBlock:')
+        #print(x)
         res = x
 
         x = self.norm1(x)
@@ -284,8 +292,13 @@ class ConvEmbed(nn.Module):
         self.norm = norm_layer(embed_dim) if norm_layer else None
 
     def forward(self, x):
+        #print('embe:')
+        #print(x)
+        print('from')
+        print(x)
         x = self.proj(x)
-
+        print('end')
+        print(x)
         B, C, H, W = x.shape
         x = rearrange(x, 'b c h w -> b (h w) c')
         if self.norm:
@@ -391,9 +404,10 @@ class VisionTransformer(nn.Module):
             nn.init.constant_(m.weight, 1.0)
 
     def forward(self, x):
+        #print('vit:')
+        #print(x)
         x = self.patch_embed(x)
         B, C, H, W = x.size()
-
         x = rearrange(x, 'b c h w -> b (h w) c')
 
         cls_tokens = None
@@ -424,7 +438,7 @@ class ConvolutionalVisionTransformer(nn.Module):
                  spec=None):
         super().__init__()
         self.num_classes = num_classes
-
+        #print("init")
         self.num_stages = spec['NUM_STAGES']
         for i in range(self.num_stages):
             kwargs = {
@@ -519,13 +533,35 @@ class ConvolutionalVisionTransformer(nn.Module):
                     need_init_state_dict[k] = v
             self.load_state_dict(need_init_state_dict, strict=False)
 
+
+    def forward_features(self, x):
+        for i in range(self.num_stages):
+            x, cls_tokens = getattr(self, f'stage{i}')(x)
+
+        if self.cls_token:
+            x = self.norm(cls_tokens)
+            x = torch.squeeze(x)
+        else:
+            x = rearrange(x, 'b c h w -> b (h w) c')
+            x = self.norm(x)
+            x = torch.mean(x, dim=1)
+
+        return x
+
+    def forward(self, x):
+        x = self.forward_features(x)
+        x = self.head(x)
+
+        return x
+
+
 def get_cls_model(config, **kwargs):
     msvit_spec = config.MODEL.SPEC
     msvit = ConvolutionalVisionTransformer(
         in_chans=3,
         num_classes=config.MODEL.NUM_CLASSES,
         act_layer=QuickGELU,
-        norm_layer=LayerNorm,
+        norm_layer=partial(LayerNorm, eps=1e-5),
         init=getattr(msvit_spec, 'INIT', 'trunc_norm'),
         spec=msvit_spec
     )

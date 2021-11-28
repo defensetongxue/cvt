@@ -137,9 +137,13 @@ class ConvEmbed(nn.Layer):
         self.norm = norm_layer(embed_dim) if norm_layer else None
 
     def forward(self, x):
+        print('from')
+        print(x)
         x = self.proj(x)
         B, C, H, W = x.shape  # B个图片H*W的大小 C个通道(example：W==3:红黄蓝)
         # 对每个图片进行嵌入，相当于对每个图片线性的堆叠
+        print('end')
+        print(x)
         x = graph2vector(x)
         if self.norm:
             x = self.norm(x)
@@ -357,6 +361,7 @@ class Block(nn.Layer):
         )
 
     def forward(self, x, h, w):
+
         res = x
 
         x = self.norm1(x)
@@ -476,7 +481,6 @@ class VisionTransformer(nn.Layer):
     def forward(self, x):
         x = self.patch_embed(x)
         B, C, H, W = x.shape
-
         x = graph2vector(x)
 
         cls_tokens = None
@@ -614,10 +618,11 @@ class ConvolutionalVisionTransformer(nn.Layer):
         else:
             x = graph2vector(x, 'b c h w -> b (h w) c')
             x = self.norm(x)
-            x = paddle.mean(x, dim=1)
+            x = paddle.mean(x, axis=1)
 
         return x
-
+    
+        return x
     def forward(self, x):
         x = self.forward_features(x)
         x = self.head(x)
@@ -634,4 +639,10 @@ def generate_model(config):
         norm_layer=nn.LayerNorm,
         init=getattr(modelspec, 'INIT', 'trunc_norm'),
         spec=modelspec)
+    if config.MODEL.INIT_WEIGHTS:
+        model.init_weights(
+            config.MODEL.PRETRAINED,
+            config.MODEL.PRETRAINED_LAYERS,
+            config.VERBOSE
+        )
     return model
