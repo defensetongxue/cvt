@@ -137,13 +137,9 @@ class ConvEmbed(nn.Layer):
         self.norm = norm_layer(embed_dim) if norm_layer else None
 
     def forward(self, x):
-        print('from')
-        print(x)
         x = self.proj(x)
         B, C, H, W = x.shape  # B个图片H*W的大小 C个通道(example：W==3:红黄蓝)
         # 对每个图片进行嵌入，相当于对每个图片线性的堆叠
-        print('end')
-        print(x)
         x = graph2vector(x)
         if self.norm:
             x = self.norm(x)
