@@ -1,459 +1,459 @@
-stage0.patch_embed.proj.weight
-stage0.patch_embed.proj.bias
-stage0.patch_embed.norm.weight
-stage0.patch_embed.norm.bias
-stage0.blocks.0.norm1.weight
-stage0.blocks.0.norm1.bias
-stage0.blocks.0.attn.conv_proj_q.conv.weight
-stage0.blocks.0.attn.conv_proj_q.bn.weight
-stage0.blocks.0.attn.conv_proj_q.bn.bias
-stage0.blocks.0.attn.conv_proj_q.bn.running_mean
-stage0.blocks.0.attn.conv_proj_q.bn.running_var
-stage0.blocks.0.attn.conv_proj_q.bn.num_batches_tracked
-stage0.blocks.0.attn.conv_proj_k.conv.weight
-stage0.blocks.0.attn.conv_proj_k.bn.weight
-stage0.blocks.0.attn.conv_proj_k.bn.bias
-stage0.blocks.0.attn.conv_proj_k.bn.running_mean
-stage0.blocks.0.attn.conv_proj_k.bn.running_var
-stage0.blocks.0.attn.conv_proj_k.bn.num_batches_tracked
-stage0.blocks.0.attn.conv_proj_v.conv.weight
-stage0.blocks.0.attn.conv_proj_v.bn.weight
-stage0.blocks.0.attn.conv_proj_v.bn.bias
-stage0.blocks.0.attn.conv_proj_v.bn.running_mean
-stage0.blocks.0.attn.conv_proj_v.bn.running_var
-stage0.blocks.0.attn.conv_proj_v.bn.num_batches_tracked
-stage0.blocks.0.attn.proj_q.weight
-stage0.blocks.0.attn.proj_q.bias
-stage0.blocks.0.attn.proj_k.weight
-stage0.blocks.0.attn.proj_k.bias
-stage0.blocks.0.attn.proj_v.weight
-stage0.blocks.0.attn.proj_v.bias
-stage0.blocks.0.attn.proj.weight
-stage0.blocks.0.attn.proj.bias
-stage0.blocks.0.norm2.weight
-stage0.blocks.0.norm2.bias
-stage0.blocks.0.mlp.fc1.weight
-stage0.blocks.0.mlp.fc1.bias
-stage0.blocks.0.mlp.fc2.weight
-stage0.blocks.0.mlp.fc2.bias
-stage1.patch_embed.proj.weight
-stage1.patch_embed.proj.bias
-stage1.patch_embed.norm.weight
-stage1.patch_embed.norm.bias
-stage1.blocks.0.norm1.weight
-stage1.blocks.0.norm1.bias
-stage1.blocks.0.attn.conv_proj_q.conv.weight
-stage1.blocks.0.attn.conv_proj_q.bn.weight
-stage1.blocks.0.attn.conv_proj_q.bn.bias
-stage1.blocks.0.attn.conv_proj_q.bn.running_mean
-stage1.blocks.0.attn.conv_proj_q.bn.running_var
-stage1.blocks.0.attn.conv_proj_q.bn.num_batches_tracked
-stage1.blocks.0.attn.conv_proj_k.conv.weight
-stage1.blocks.0.attn.conv_proj_k.bn.weight
-stage1.blocks.0.attn.conv_proj_k.bn.bias
-stage1.blocks.0.attn.conv_proj_k.bn.running_mean
-stage1.blocks.0.attn.conv_proj_k.bn.running_var
-stage1.blocks.0.attn.conv_proj_k.bn.num_batches_tracked
-stage1.blocks.0.attn.conv_proj_v.conv.weight
-stage1.blocks.0.attn.conv_proj_v.bn.weight
-stage1.blocks.0.attn.conv_proj_v.bn.bias
-stage1.blocks.0.attn.conv_proj_v.bn.running_mean
-stage1.blocks.0.attn.conv_proj_v.bn.running_var
-stage1.blocks.0.attn.conv_proj_v.bn.num_batches_tracked
-stage1.blocks.0.attn.proj_q.weight
-stage1.blocks.0.attn.proj_q.bias
-stage1.blocks.0.attn.proj_k.weight
-stage1.blocks.0.attn.proj_k.bias
-stage1.blocks.0.attn.proj_v.weight
-stage1.blocks.0.attn.proj_v.bias
-stage1.blocks.0.attn.proj.weight
-stage1.blocks.0.attn.proj.bias
-stage1.blocks.0.norm2.weight
-stage1.blocks.0.norm2.bias
-stage1.blocks.0.mlp.fc1.weight
-stage1.blocks.0.mlp.fc1.bias
-stage1.blocks.0.mlp.fc2.weight
-stage1.blocks.0.mlp.fc2.bias
-stage1.blocks.1.norm1.weight
-stage1.blocks.1.norm1.bias
-stage1.blocks.1.attn.conv_proj_q.conv.weight
-stage1.blocks.1.attn.conv_proj_q.bn.weight
-stage1.blocks.1.attn.conv_proj_q.bn.bias
-stage1.blocks.1.attn.conv_proj_q.bn.running_mean
-stage1.blocks.1.attn.conv_proj_q.bn.running_var
-stage1.blocks.1.attn.conv_proj_q.bn.num_batches_tracked
-stage1.blocks.1.attn.conv_proj_k.conv.weight
-stage1.blocks.1.attn.conv_proj_k.bn.weight
-stage1.blocks.1.attn.conv_proj_k.bn.bias
-stage1.blocks.1.attn.conv_proj_k.bn.running_mean
-stage1.blocks.1.attn.conv_proj_k.bn.running_var
-stage1.blocks.1.attn.conv_proj_k.bn.num_batches_tracked
-stage1.blocks.1.attn.conv_proj_v.conv.weight
-stage1.blocks.1.attn.conv_proj_v.bn.weight
-stage1.blocks.1.attn.conv_proj_v.bn.bias
-stage1.blocks.1.attn.conv_proj_v.bn.running_mean
-stage1.blocks.1.attn.conv_proj_v.bn.running_var
-stage1.blocks.1.attn.conv_proj_v.bn.num_batches_tracked
-stage1.blocks.1.attn.proj_q.weight
-stage1.blocks.1.attn.proj_q.bias
-stage1.blocks.1.attn.proj_k.weight
-stage1.blocks.1.attn.proj_k.bias
-stage1.blocks.1.attn.proj_v.weight
-stage1.blocks.1.attn.proj_v.bias
-stage1.blocks.1.attn.proj.weight
-stage1.blocks.1.attn.proj.bias
-stage1.blocks.1.norm2.weight
-stage1.blocks.1.norm2.bias
-stage1.blocks.1.mlp.fc1.weight
-stage1.blocks.1.mlp.fc1.bias
-stage1.blocks.1.mlp.fc2.weight
-stage1.blocks.1.mlp.fc2.bias
-stage2.cls_token
-stage2.patch_embed.proj.weight
-stage2.patch_embed.proj.bias
-stage2.patch_embed.norm.weight
-stage2.patch_embed.norm.bias
-stage2.blocks.0.norm1.weight
-stage2.blocks.0.norm1.bias
-stage2.blocks.0.attn.conv_proj_q.conv.weight
-stage2.blocks.0.attn.conv_proj_q.bn.weight
-stage2.blocks.0.attn.conv_proj_q.bn.bias
-stage2.blocks.0.attn.conv_proj_q.bn.running_mean
-stage2.blocks.0.attn.conv_proj_q.bn.running_var
-stage2.blocks.0.attn.conv_proj_q.bn.num_batches_tracked
-stage2.blocks.0.attn.conv_proj_k.conv.weight
-stage2.blocks.0.attn.conv_proj_k.bn.weight
-stage2.blocks.0.attn.conv_proj_k.bn.bias
-stage2.blocks.0.attn.conv_proj_k.bn.running_mean
-stage2.blocks.0.attn.conv_proj_k.bn.running_var
-stage2.blocks.0.attn.conv_proj_k.bn.num_batches_tracked
-stage2.blocks.0.attn.conv_proj_v.conv.weight
-stage2.blocks.0.attn.conv_proj_v.bn.weight
-stage2.blocks.0.attn.conv_proj_v.bn.bias
-stage2.blocks.0.attn.conv_proj_v.bn.running_mean
-stage2.blocks.0.attn.conv_proj_v.bn.running_var
-stage2.blocks.0.attn.conv_proj_v.bn.num_batches_tracked
-stage2.blocks.0.attn.proj_q.weight
-stage2.blocks.0.attn.proj_q.bias
-stage2.blocks.0.attn.proj_k.weight
-stage2.blocks.0.attn.proj_k.bias
-stage2.blocks.0.attn.proj_v.weight
-stage2.blocks.0.attn.proj_v.bias
-stage2.blocks.0.attn.proj.weight
-stage2.blocks.0.attn.proj.bias
-stage2.blocks.0.norm2.weight
-stage2.blocks.0.norm2.bias
-stage2.blocks.0.mlp.fc1.weight
-stage2.blocks.0.mlp.fc1.bias
-stage2.blocks.0.mlp.fc2.weight
-stage2.blocks.0.mlp.fc2.bias
-stage2.blocks.1.norm1.weight
-stage2.blocks.1.norm1.bias
-stage2.blocks.1.attn.conv_proj_q.conv.weight
-stage2.blocks.1.attn.conv_proj_q.bn.weight
-stage2.blocks.1.attn.conv_proj_q.bn.bias
-stage2.blocks.1.attn.conv_proj_q.bn.running_mean
-stage2.blocks.1.attn.conv_proj_q.bn.running_var
-stage2.blocks.1.attn.conv_proj_q.bn.num_batches_tracked
-stage2.blocks.1.attn.conv_proj_k.conv.weight
-stage2.blocks.1.attn.conv_proj_k.bn.weight
-stage2.blocks.1.attn.conv_proj_k.bn.bias
-stage2.blocks.1.attn.conv_proj_k.bn.running_mean
-stage2.blocks.1.attn.conv_proj_k.bn.running_var
-stage2.blocks.1.attn.conv_proj_k.bn.num_batches_tracked
-stage2.blocks.1.attn.conv_proj_v.conv.weight
-stage2.blocks.1.attn.conv_proj_v.bn.weight
-stage2.blocks.1.attn.conv_proj_v.bn.bias
-stage2.blocks.1.attn.conv_proj_v.bn.running_mean
-stage2.blocks.1.attn.conv_proj_v.bn.running_var
-stage2.blocks.1.attn.conv_proj_v.bn.num_batches_tracked
-stage2.blocks.1.attn.proj_q.weight
-stage2.blocks.1.attn.proj_q.bias
-stage2.blocks.1.attn.proj_k.weight
-stage2.blocks.1.attn.proj_k.bias
-stage2.blocks.1.attn.proj_v.weight
-stage2.blocks.1.attn.proj_v.bias
-stage2.blocks.1.attn.proj.weight
-stage2.blocks.1.attn.proj.bias
-stage2.blocks.1.norm2.weight
-stage2.blocks.1.norm2.bias
-stage2.blocks.1.mlp.fc1.weight
-stage2.blocks.1.mlp.fc1.bias
-stage2.blocks.1.mlp.fc2.weight
-stage2.blocks.1.mlp.fc2.bias
-stage2.blocks.2.norm1.weight
-stage2.blocks.2.norm1.bias
-stage2.blocks.2.attn.conv_proj_q.conv.weight
-stage2.blocks.2.attn.conv_proj_q.bn.weight
-stage2.blocks.2.attn.conv_proj_q.bn.bias
-stage2.blocks.2.attn.conv_proj_q.bn.running_mean
-stage2.blocks.2.attn.conv_proj_q.bn.running_var
-stage2.blocks.2.attn.conv_proj_q.bn.num_batches_tracked
-stage2.blocks.2.attn.conv_proj_k.conv.weight
-stage2.blocks.2.attn.conv_proj_k.bn.weight
-stage2.blocks.2.attn.conv_proj_k.bn.bias
-stage2.blocks.2.attn.conv_proj_k.bn.running_mean
-stage2.blocks.2.attn.conv_proj_k.bn.running_var
-stage2.blocks.2.attn.conv_proj_k.bn.num_batches_tracked
-stage2.blocks.2.attn.conv_proj_v.conv.weight
-stage2.blocks.2.attn.conv_proj_v.bn.weight
-stage2.blocks.2.attn.conv_proj_v.bn.bias
-stage2.blocks.2.attn.conv_proj_v.bn.running_mean
-stage2.blocks.2.attn.conv_proj_v.bn.running_var
-stage2.blocks.2.attn.conv_proj_v.bn.num_batches_tracked
-stage2.blocks.2.attn.proj_q.weight
-stage2.blocks.2.attn.proj_q.bias
-stage2.blocks.2.attn.proj_k.weight
-stage2.blocks.2.attn.proj_k.bias
-stage2.blocks.2.attn.proj_v.weight
-stage2.blocks.2.attn.proj_v.bias
-stage2.blocks.2.attn.proj.weight
-stage2.blocks.2.attn.proj.bias
-stage2.blocks.2.norm2.weight
-stage2.blocks.2.norm2.bias
-stage2.blocks.2.mlp.fc1.weight
-stage2.blocks.2.mlp.fc1.bias
-stage2.blocks.2.mlp.fc2.weight
-stage2.blocks.2.mlp.fc2.bias
-stage2.blocks.3.norm1.weight
-stage2.blocks.3.norm1.bias
-stage2.blocks.3.attn.conv_proj_q.conv.weight
-stage2.blocks.3.attn.conv_proj_q.bn.weight
-stage2.blocks.3.attn.conv_proj_q.bn.bias
-stage2.blocks.3.attn.conv_proj_q.bn.running_mean
-stage2.blocks.3.attn.conv_proj_q.bn.running_var
-stage2.blocks.3.attn.conv_proj_q.bn.num_batches_tracked
-stage2.blocks.3.attn.conv_proj_k.conv.weight
-stage2.blocks.3.attn.conv_proj_k.bn.weight
-stage2.blocks.3.attn.conv_proj_k.bn.bias
-stage2.blocks.3.attn.conv_proj_k.bn.running_mean
-stage2.blocks.3.attn.conv_proj_k.bn.running_var
-stage2.blocks.3.attn.conv_proj_k.bn.num_batches_tracked
-stage2.blocks.3.attn.conv_proj_v.conv.weight
-stage2.blocks.3.attn.conv_proj_v.bn.weight
-stage2.blocks.3.attn.conv_proj_v.bn.bias
-stage2.blocks.3.attn.conv_proj_v.bn.running_mean
-stage2.blocks.3.attn.conv_proj_v.bn.running_var
-stage2.blocks.3.attn.conv_proj_v.bn.num_batches_tracked
-stage2.blocks.3.attn.proj_q.weight
-stage2.blocks.3.attn.proj_q.bias
-stage2.blocks.3.attn.proj_k.weight
-stage2.blocks.3.attn.proj_k.bias
-stage2.blocks.3.attn.proj_v.weight
-stage2.blocks.3.attn.proj_v.bias
-stage2.blocks.3.attn.proj.weight
-stage2.blocks.3.attn.proj.bias
-stage2.blocks.3.norm2.weight
-stage2.blocks.3.norm2.bias
-stage2.blocks.3.mlp.fc1.weight
-stage2.blocks.3.mlp.fc1.bias
-stage2.blocks.3.mlp.fc2.weight
-stage2.blocks.3.mlp.fc2.bias
-stage2.blocks.4.norm1.weight
-stage2.blocks.4.norm1.bias
-stage2.blocks.4.attn.conv_proj_q.conv.weight
-stage2.blocks.4.attn.conv_proj_q.bn.weight
-stage2.blocks.4.attn.conv_proj_q.bn.bias
-stage2.blocks.4.attn.conv_proj_q.bn.running_mean
-stage2.blocks.4.attn.conv_proj_q.bn.running_var
-stage2.blocks.4.attn.conv_proj_q.bn.num_batches_tracked
-stage2.blocks.4.attn.conv_proj_k.conv.weight
-stage2.blocks.4.attn.conv_proj_k.bn.weight
-stage2.blocks.4.attn.conv_proj_k.bn.bias
-stage2.blocks.4.attn.conv_proj_k.bn.running_mean
-stage2.blocks.4.attn.conv_proj_k.bn.running_var
-stage2.blocks.4.attn.conv_proj_k.bn.num_batches_tracked
-stage2.blocks.4.attn.conv_proj_v.conv.weight
-stage2.blocks.4.attn.conv_proj_v.bn.weight
-stage2.blocks.4.attn.conv_proj_v.bn.bias
-stage2.blocks.4.attn.conv_proj_v.bn.running_mean
-stage2.blocks.4.attn.conv_proj_v.bn.running_var
-stage2.blocks.4.attn.conv_proj_v.bn.num_batches_tracked
-stage2.blocks.4.attn.proj_q.weight
-stage2.blocks.4.attn.proj_q.bias
-stage2.blocks.4.attn.proj_k.weight
-stage2.blocks.4.attn.proj_k.bias
-stage2.blocks.4.attn.proj_v.weight
-stage2.blocks.4.attn.proj_v.bias
-stage2.blocks.4.attn.proj.weight
-stage2.blocks.4.attn.proj.bias
-stage2.blocks.4.norm2.weight
-stage2.blocks.4.norm2.bias
-stage2.blocks.4.mlp.fc1.weight
-stage2.blocks.4.mlp.fc1.bias
-stage2.blocks.4.mlp.fc2.weight
-stage2.blocks.4.mlp.fc2.bias
-stage2.blocks.5.norm1.weight
-stage2.blocks.5.norm1.bias
-stage2.blocks.5.attn.conv_proj_q.conv.weight
-stage2.blocks.5.attn.conv_proj_q.bn.weight
-stage2.blocks.5.attn.conv_proj_q.bn.bias
-stage2.blocks.5.attn.conv_proj_q.bn.running_mean
-stage2.blocks.5.attn.conv_proj_q.bn.running_var
-stage2.blocks.5.attn.conv_proj_q.bn.num_batches_tracked
-stage2.blocks.5.attn.conv_proj_k.conv.weight
-stage2.blocks.5.attn.conv_proj_k.bn.weight
-stage2.blocks.5.attn.conv_proj_k.bn.bias
-stage2.blocks.5.attn.conv_proj_k.bn.running_mean
-stage2.blocks.5.attn.conv_proj_k.bn.running_var
-stage2.blocks.5.attn.conv_proj_k.bn.num_batches_tracked
-stage2.blocks.5.attn.conv_proj_v.conv.weight
-stage2.blocks.5.attn.conv_proj_v.bn.weight
-stage2.blocks.5.attn.conv_proj_v.bn.bias
-stage2.blocks.5.attn.conv_proj_v.bn.running_mean
-stage2.blocks.5.attn.conv_proj_v.bn.running_var
-stage2.blocks.5.attn.conv_proj_v.bn.num_batches_tracked
-stage2.blocks.5.attn.proj_q.weight
-stage2.blocks.5.attn.proj_q.bias
-stage2.blocks.5.attn.proj_k.weight
-stage2.blocks.5.attn.proj_k.bias
-stage2.blocks.5.attn.proj_v.weight
-stage2.blocks.5.attn.proj_v.bias
-stage2.blocks.5.attn.proj.weight
-stage2.blocks.5.attn.proj.bias
-stage2.blocks.5.norm2.weight
-stage2.blocks.5.norm2.bias
-stage2.blocks.5.mlp.fc1.weight
-stage2.blocks.5.mlp.fc1.bias
-stage2.blocks.5.mlp.fc2.weight
-stage2.blocks.5.mlp.fc2.bias
-stage2.blocks.6.norm1.weight
-stage2.blocks.6.norm1.bias
-stage2.blocks.6.attn.conv_proj_q.conv.weight
-stage2.blocks.6.attn.conv_proj_q.bn.weight
-stage2.blocks.6.attn.conv_proj_q.bn.bias
-stage2.blocks.6.attn.conv_proj_q.bn.running_mean
-stage2.blocks.6.attn.conv_proj_q.bn.running_var
-stage2.blocks.6.attn.conv_proj_q.bn.num_batches_tracked
-stage2.blocks.6.attn.conv_proj_k.conv.weight
-stage2.blocks.6.attn.conv_proj_k.bn.weight
-stage2.blocks.6.attn.conv_proj_k.bn.bias
-stage2.blocks.6.attn.conv_proj_k.bn.running_mean
-stage2.blocks.6.attn.conv_proj_k.bn.running_var
-stage2.blocks.6.attn.conv_proj_k.bn.num_batches_tracked
-stage2.blocks.6.attn.conv_proj_v.conv.weight
-stage2.blocks.6.attn.conv_proj_v.bn.weight
-stage2.blocks.6.attn.conv_proj_v.bn.bias
-stage2.blocks.6.attn.conv_proj_v.bn.running_mean
-stage2.blocks.6.attn.conv_proj_v.bn.running_var
-stage2.blocks.6.attn.conv_proj_v.bn.num_batches_tracked
-stage2.blocks.6.attn.proj_q.weight
-stage2.blocks.6.attn.proj_q.bias
-stage2.blocks.6.attn.proj_k.weight
-stage2.blocks.6.attn.proj_k.bias
-stage2.blocks.6.attn.proj_v.weight
-stage2.blocks.6.attn.proj_v.bias
-stage2.blocks.6.attn.proj.weight
-stage2.blocks.6.attn.proj.bias
-stage2.blocks.6.norm2.weight
-stage2.blocks.6.norm2.bias
-stage2.blocks.6.mlp.fc1.weight
-stage2.blocks.6.mlp.fc1.bias
-stage2.blocks.6.mlp.fc2.weight
-stage2.blocks.6.mlp.fc2.bias
-stage2.blocks.7.norm1.weight
-stage2.blocks.7.norm1.bias
-stage2.blocks.7.attn.conv_proj_q.conv.weight
-stage2.blocks.7.attn.conv_proj_q.bn.weight
-stage2.blocks.7.attn.conv_proj_q.bn.bias
-stage2.blocks.7.attn.conv_proj_q.bn.running_mean
-stage2.blocks.7.attn.conv_proj_q.bn.running_var
-stage2.blocks.7.attn.conv_proj_q.bn.num_batches_tracked
-stage2.blocks.7.attn.conv_proj_k.conv.weight
-stage2.blocks.7.attn.conv_proj_k.bn.weight
-stage2.blocks.7.attn.conv_proj_k.bn.bias
-stage2.blocks.7.attn.conv_proj_k.bn.running_mean
-stage2.blocks.7.attn.conv_proj_k.bn.running_var
-stage2.blocks.7.attn.conv_proj_k.bn.num_batches_tracked
-stage2.blocks.7.attn.conv_proj_v.conv.weight
-stage2.blocks.7.attn.conv_proj_v.bn.weight
-stage2.blocks.7.attn.conv_proj_v.bn.bias
-stage2.blocks.7.attn.conv_proj_v.bn.running_mean
-stage2.blocks.7.attn.conv_proj_v.bn.running_var
-stage2.blocks.7.attn.conv_proj_v.bn.num_batches_tracked
-stage2.blocks.7.attn.proj_q.weight
-stage2.blocks.7.attn.proj_q.bias
-stage2.blocks.7.attn.proj_k.weight
-stage2.blocks.7.attn.proj_k.bias
-stage2.blocks.7.attn.proj_v.weight
-stage2.blocks.7.attn.proj_v.bias
-stage2.blocks.7.attn.proj.weight
-stage2.blocks.7.attn.proj.bias
-stage2.blocks.7.norm2.weight
-stage2.blocks.7.norm2.bias
-stage2.blocks.7.mlp.fc1.weight
-stage2.blocks.7.mlp.fc1.bias
-stage2.blocks.7.mlp.fc2.weight
-stage2.blocks.7.mlp.fc2.bias
-stage2.blocks.8.norm1.weight
-stage2.blocks.8.norm1.bias
-stage2.blocks.8.attn.conv_proj_q.conv.weight
-stage2.blocks.8.attn.conv_proj_q.bn.weight
-stage2.blocks.8.attn.conv_proj_q.bn.bias
-stage2.blocks.8.attn.conv_proj_q.bn.running_mean
-stage2.blocks.8.attn.conv_proj_q.bn.running_var
-stage2.blocks.8.attn.conv_proj_q.bn.num_batches_tracked
-stage2.blocks.8.attn.conv_proj_k.conv.weight
-stage2.blocks.8.attn.conv_proj_k.bn.weight
-stage2.blocks.8.attn.conv_proj_k.bn.bias
-stage2.blocks.8.attn.conv_proj_k.bn.running_mean
-stage2.blocks.8.attn.conv_proj_k.bn.running_var
-stage2.blocks.8.attn.conv_proj_k.bn.num_batches_tracked
-stage2.blocks.8.attn.conv_proj_v.conv.weight
-stage2.blocks.8.attn.conv_proj_v.bn.weight
-stage2.blocks.8.attn.conv_proj_v.bn.bias
-stage2.blocks.8.attn.conv_proj_v.bn.running_mean
-stage2.blocks.8.attn.conv_proj_v.bn.running_var
-stage2.blocks.8.attn.conv_proj_v.bn.num_batches_tracked
-stage2.blocks.8.attn.proj_q.weight
-stage2.blocks.8.attn.proj_q.bias
-stage2.blocks.8.attn.proj_k.weight
-stage2.blocks.8.attn.proj_k.bias
-stage2.blocks.8.attn.proj_v.weight
-stage2.blocks.8.attn.proj_v.bias
-stage2.blocks.8.attn.proj.weight
-stage2.blocks.8.attn.proj.bias
-stage2.blocks.8.norm2.weight
-stage2.blocks.8.norm2.bias
-stage2.blocks.8.mlp.fc1.weight
-stage2.blocks.8.mlp.fc1.bias
-stage2.blocks.8.mlp.fc2.weight
-stage2.blocks.8.mlp.fc2.bias
-stage2.blocks.9.norm1.weight
-stage2.blocks.9.norm1.bias
-stage2.blocks.9.attn.conv_proj_q.conv.weight
-stage2.blocks.9.attn.conv_proj_q.bn.weight
-stage2.blocks.9.attn.conv_proj_q.bn.bias
-stage2.blocks.9.attn.conv_proj_q.bn.running_mean
-stage2.blocks.9.attn.conv_proj_q.bn.running_var
-stage2.blocks.9.attn.conv_proj_q.bn.num_batches_tracked
-stage2.blocks.9.attn.conv_proj_k.conv.weight
-stage2.blocks.9.attn.conv_proj_k.bn.weight
-stage2.blocks.9.attn.conv_proj_k.bn.bias
-stage2.blocks.9.attn.conv_proj_k.bn.running_mean
-stage2.blocks.9.attn.conv_proj_k.bn.running_var
-stage2.blocks.9.attn.conv_proj_k.bn.num_batches_tracked
-stage2.blocks.9.attn.conv_proj_v.conv.weight
-stage2.blocks.9.attn.conv_proj_v.bn.weight
-stage2.blocks.9.attn.conv_proj_v.bn.bias
-stage2.blocks.9.attn.conv_proj_v.bn.running_mean
-stage2.blocks.9.attn.conv_proj_v.bn.running_var
-stage2.blocks.9.attn.conv_proj_v.bn.num_batches_tracked
-stage2.blocks.9.attn.proj_q.weight
-stage2.blocks.9.attn.proj_q.bias
-stage2.blocks.9.attn.proj_k.weight
-stage2.blocks.9.attn.proj_k.bias
-stage2.blocks.9.attn.proj_v.weight
-stage2.blocks.9.attn.proj_v.bias
-stage2.blocks.9.attn.proj.weight
-stage2.blocks.9.attn.proj.bias
-stage2.blocks.9.norm2.weight
-stage2.blocks.9.norm2.bias
-stage2.blocks.9.mlp.fc1.weight
-stage2.blocks.9.mlp.fc1.bias
-stage2.blocks.9.mlp.fc2.weight
-stage2.blocks.9.mlp.fc2.bias
-norm.weight
-norm.bias
-head.weight
-head.bias
+('stage0.patch_embed.proj.weight',  ([64, 3, 7, 7]))
+('stage0.patch_embed.proj.bias',  ([64]))
+('stage0.patch_embed.norm.weight',  ([64]))
+('stage0.patch_embed.norm.bias',  ([64]))
+('stage0.blocks.0.norm1.weight',  ([64]))
+('stage0.blocks.0.norm1.bias',  ([64]))
+('stage0.blocks.0.attn.conv_proj_q.conv.weight',  ([64, 1, 3, 3]))
+('stage0.blocks.0.attn.conv_proj_q.bn.weight',  ([64]))
+('stage0.blocks.0.attn.conv_proj_q.bn.bias',  ([64]))
+('stage0.blocks.0.attn.conv_proj_q.bn.running_mean',  ([64]))
+('stage0.blocks.0.attn.conv_proj_q.bn.running_var',  ([64]))
+('stage0.blocks.0.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage0.blocks.0.attn.conv_proj_k.conv.weight',  ([64, 1, 3, 3]))
+('stage0.blocks.0.attn.conv_proj_k.bn.weight',  ([64]))
+('stage0.blocks.0.attn.conv_proj_k.bn.bias',  ([64]))
+('stage0.blocks.0.attn.conv_proj_k.bn.running_mean',  ([64]))
+('stage0.blocks.0.attn.conv_proj_k.bn.running_var',  ([64]))
+('stage0.blocks.0.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage0.blocks.0.attn.conv_proj_v.conv.weight',  ([64, 1, 3, 3]))
+('stage0.blocks.0.attn.conv_proj_v.bn.weight',  ([64]))
+('stage0.blocks.0.attn.conv_proj_v.bn.bias',  ([64]))
+('stage0.blocks.0.attn.conv_proj_v.bn.running_mean',  ([64]))
+('stage0.blocks.0.attn.conv_proj_v.bn.running_var',  ([64]))
+('stage0.blocks.0.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage0.blocks.0.attn.proj_q.weight',  ([64, 64]))
+('stage0.blocks.0.attn.proj_q.bias',  ([64]))
+('stage0.blocks.0.attn.proj_k.weight',  ([64, 64]))
+('stage0.blocks.0.attn.proj_k.bias',  ([64]))
+('stage0.blocks.0.attn.proj_v.weight',  ([64, 64]))
+('stage0.blocks.0.attn.proj_v.bias',  ([64]))
+('stage0.blocks.0.attn.proj.weight',  ([64, 64]))
+('stage0.blocks.0.attn.proj.bias',  ([64]))
+('stage0.blocks.0.norm2.weight',  ([64]))
+('stage0.blocks.0.norm2.bias',  ([64]))
+('stage0.blocks.0.mlp.fc1.weight',  ([256, 64]))
+('stage0.blocks.0.mlp.fc1.bias',  ([256]))
+('stage0.blocks.0.mlp.fc2.weight',  ([64, 256]))
+('stage0.blocks.0.mlp.fc2.bias',  ([64]))
+('stage1.patch_embed.proj.weight',  ([192, 64, 3, 3]))
+('stage1.patch_embed.proj.bias',  ([192]))
+('stage1.patch_embed.norm.weight',  ([192]))
+('stage1.patch_embed.norm.bias',  ([192]))
+('stage1.blocks.0.norm1.weight',  ([192]))
+('stage1.blocks.0.norm1.bias',  ([192]))
+('stage1.blocks.0.attn.conv_proj_q.conv.weight',  ([192, 1, 3, 3]))
+('stage1.blocks.0.attn.conv_proj_q.bn.weight',  ([192]))
+('stage1.blocks.0.attn.conv_proj_q.bn.bias',  ([192]))
+('stage1.blocks.0.attn.conv_proj_q.bn.running_mean',  ([192]))
+('stage1.blocks.0.attn.conv_proj_q.bn.running_var',  ([192]))
+('stage1.blocks.0.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage1.blocks.0.attn.conv_proj_k.conv.weight',  ([192, 1, 3, 3]))
+('stage1.blocks.0.attn.conv_proj_k.bn.weight',  ([192]))
+('stage1.blocks.0.attn.conv_proj_k.bn.bias',  ([192]))
+('stage1.blocks.0.attn.conv_proj_k.bn.running_mean',  ([192]))
+('stage1.blocks.0.attn.conv_proj_k.bn.running_var',  ([192]))
+('stage1.blocks.0.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage1.blocks.0.attn.conv_proj_v.conv.weight',  ([192, 1, 3, 3]))
+('stage1.blocks.0.attn.conv_proj_v.bn.weight',  ([192]))
+('stage1.blocks.0.attn.conv_proj_v.bn.bias',  ([192]))
+('stage1.blocks.0.attn.conv_proj_v.bn.running_mean',  ([192]))
+('stage1.blocks.0.attn.conv_proj_v.bn.running_var',  ([192]))
+('stage1.blocks.0.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage1.blocks.0.attn.proj_q.weight',  ([192, 192]))
+('stage1.blocks.0.attn.proj_q.bias',  ([192]))
+('stage1.blocks.0.attn.proj_k.weight',  ([192, 192]))
+('stage1.blocks.0.attn.proj_k.bias',  ([192]))
+('stage1.blocks.0.attn.proj_v.weight',  ([192, 192]))
+('stage1.blocks.0.attn.proj_v.bias',  ([192]))
+('stage1.blocks.0.attn.proj.weight',  ([192, 192]))
+('stage1.blocks.0.attn.proj.bias',  ([192]))
+('stage1.blocks.0.norm2.weight',  ([192]))
+('stage1.blocks.0.norm2.bias',  ([192]))
+('stage1.blocks.0.mlp.fc1.weight',  ([768, 192]))
+('stage1.blocks.0.mlp.fc1.bias',  ([768]))
+('stage1.blocks.0.mlp.fc2.weight',  ([192, 768]))
+('stage1.blocks.0.mlp.fc2.bias',  ([192]))
+('stage1.blocks.1.norm1.weight',  ([192]))
+('stage1.blocks.1.norm1.bias',  ([192]))
+('stage1.blocks.1.attn.conv_proj_q.conv.weight',  ([192, 1, 3, 3]))
+('stage1.blocks.1.attn.conv_proj_q.bn.weight',  ([192]))
+('stage1.blocks.1.attn.conv_proj_q.bn.bias',  ([192]))
+('stage1.blocks.1.attn.conv_proj_q.bn.running_mean',  ([192]))
+('stage1.blocks.1.attn.conv_proj_q.bn.running_var',  ([192]))
+('stage1.blocks.1.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage1.blocks.1.attn.conv_proj_k.conv.weight',  ([192, 1, 3, 3]))
+('stage1.blocks.1.attn.conv_proj_k.bn.weight',  ([192]))
+('stage1.blocks.1.attn.conv_proj_k.bn.bias',  ([192]))
+('stage1.blocks.1.attn.conv_proj_k.bn.running_mean',  ([192]))
+('stage1.blocks.1.attn.conv_proj_k.bn.running_var',  ([192]))
+('stage1.blocks.1.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage1.blocks.1.attn.conv_proj_v.conv.weight',  ([192, 1, 3, 3]))
+('stage1.blocks.1.attn.conv_proj_v.bn.weight',  ([192]))
+('stage1.blocks.1.attn.conv_proj_v.bn.bias',  ([192]))
+('stage1.blocks.1.attn.conv_proj_v.bn.running_mean',  ([192]))
+('stage1.blocks.1.attn.conv_proj_v.bn.running_var',  ([192]))
+('stage1.blocks.1.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage1.blocks.1.attn.proj_q.weight',  ([192, 192]))
+('stage1.blocks.1.attn.proj_q.bias',  ([192]))
+('stage1.blocks.1.attn.proj_k.weight',  ([192, 192]))
+('stage1.blocks.1.attn.proj_k.bias',  ([192]))
+('stage1.blocks.1.attn.proj_v.weight',  ([192, 192]))
+('stage1.blocks.1.attn.proj_v.bias',  ([192]))
+('stage1.blocks.1.attn.proj.weight',  ([192, 192]))
+('stage1.blocks.1.attn.proj.bias',  ([192]))
+('stage1.blocks.1.norm2.weight',  ([192]))
+('stage1.blocks.1.norm2.bias',  ([192]))
+('stage1.blocks.1.mlp.fc1.weight',  ([768, 192]))
+('stage1.blocks.1.mlp.fc1.bias',  ([768]))
+('stage1.blocks.1.mlp.fc2.weight',  ([192, 768]))
+('stage1.blocks.1.mlp.fc2.bias',  ([192]))
+('stage2.cls_token',  ([1, 1, 384]))
+('stage2.patch_embed.proj.weight',  ([384, 192, 3, 3]))
+('stage2.patch_embed.proj.bias',  ([384]))
+('stage2.patch_embed.norm.weight',  ([384]))
+('stage2.patch_embed.norm.bias',  ([384]))
+('stage2.blocks.0.norm1.weight',  ([384]))
+('stage2.blocks.0.norm1.bias',  ([384]))
+('stage2.blocks.0.attn.conv_proj_q.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.0.attn.conv_proj_q.bn.weight',  ([384]))
+('stage2.blocks.0.attn.conv_proj_q.bn.bias',  ([384]))
+('stage2.blocks.0.attn.conv_proj_q.bn.running_mean',  ([384]))
+('stage2.blocks.0.attn.conv_proj_q.bn.running_var',  ([384]))
+('stage2.blocks.0.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage2.blocks.0.attn.conv_proj_k.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.0.attn.conv_proj_k.bn.weight',  ([384]))
+('stage2.blocks.0.attn.conv_proj_k.bn.bias',  ([384]))
+('stage2.blocks.0.attn.conv_proj_k.bn.running_mean',  ([384]))
+('stage2.blocks.0.attn.conv_proj_k.bn.running_var',  ([384]))
+('stage2.blocks.0.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage2.blocks.0.attn.conv_proj_v.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.0.attn.conv_proj_v.bn.weight',  ([384]))
+('stage2.blocks.0.attn.conv_proj_v.bn.bias',  ([384]))
+('stage2.blocks.0.attn.conv_proj_v.bn.running_mean',  ([384]))
+('stage2.blocks.0.attn.conv_proj_v.bn.running_var',  ([384]))
+('stage2.blocks.0.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage2.blocks.0.attn.proj_q.weight',  ([384, 384]))
+('stage2.blocks.0.attn.proj_q.bias',  ([384]))
+('stage2.blocks.0.attn.proj_k.weight',  ([384, 384]))
+('stage2.blocks.0.attn.proj_k.bias',  ([384]))
+('stage2.blocks.0.attn.proj_v.weight',  ([384, 384]))
+('stage2.blocks.0.attn.proj_v.bias',  ([384]))
+('stage2.blocks.0.attn.proj.weight',  ([384, 384]))
+('stage2.blocks.0.attn.proj.bias',  ([384]))
+('stage2.blocks.0.norm2.weight',  ([384]))
+('stage2.blocks.0.norm2.bias',  ([384]))
+('stage2.blocks.0.mlp.fc1.weight',  ([1536, 384]))
+('stage2.blocks.0.mlp.fc1.bias',  ([1536]))
+('stage2.blocks.0.mlp.fc2.weight',  ([384, 1536]))
+('stage2.blocks.0.mlp.fc2.bias',  ([384]))
+('stage2.blocks.1.norm1.weight',  ([384]))
+('stage2.blocks.1.norm1.bias',  ([384]))
+('stage2.blocks.1.attn.conv_proj_q.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.1.attn.conv_proj_q.bn.weight',  ([384]))
+('stage2.blocks.1.attn.conv_proj_q.bn.bias',  ([384]))
+('stage2.blocks.1.attn.conv_proj_q.bn.running_mean',  ([384]))
+('stage2.blocks.1.attn.conv_proj_q.bn.running_var',  ([384]))
+('stage2.blocks.1.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage2.blocks.1.attn.conv_proj_k.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.1.attn.conv_proj_k.bn.weight',  ([384]))
+('stage2.blocks.1.attn.conv_proj_k.bn.bias',  ([384]))
+('stage2.blocks.1.attn.conv_proj_k.bn.running_mean',  ([384]))
+('stage2.blocks.1.attn.conv_proj_k.bn.running_var',  ([384]))
+('stage2.blocks.1.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage2.blocks.1.attn.conv_proj_v.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.1.attn.conv_proj_v.bn.weight',  ([384]))
+('stage2.blocks.1.attn.conv_proj_v.bn.bias',  ([384]))
+('stage2.blocks.1.attn.conv_proj_v.bn.running_mean',  ([384]))
+('stage2.blocks.1.attn.conv_proj_v.bn.running_var',  ([384]))
+('stage2.blocks.1.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage2.blocks.1.attn.proj_q.weight',  ([384, 384]))
+('stage2.blocks.1.attn.proj_q.bias',  ([384]))
+('stage2.blocks.1.attn.proj_k.weight',  ([384, 384]))
+('stage2.blocks.1.attn.proj_k.bias',  ([384]))
+('stage2.blocks.1.attn.proj_v.weight',  ([384, 384]))
+('stage2.blocks.1.attn.proj_v.bias',  ([384]))
+('stage2.blocks.1.attn.proj.weight',  ([384, 384]))
+('stage2.blocks.1.attn.proj.bias',  ([384]))
+('stage2.blocks.1.norm2.weight',  ([384]))
+('stage2.blocks.1.norm2.bias',  ([384]))
+('stage2.blocks.1.mlp.fc1.weight',  ([1536, 384]))
+('stage2.blocks.1.mlp.fc1.bias',  ([1536]))
+('stage2.blocks.1.mlp.fc2.weight',  ([384, 1536]))
+('stage2.blocks.1.mlp.fc2.bias',  ([384]))
+('stage2.blocks.2.norm1.weight',  ([384]))
+('stage2.blocks.2.norm1.bias',  ([384]))
+('stage2.blocks.2.attn.conv_proj_q.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.2.attn.conv_proj_q.bn.weight',  ([384]))
+('stage2.blocks.2.attn.conv_proj_q.bn.bias',  ([384]))
+('stage2.blocks.2.attn.conv_proj_q.bn.running_mean',  ([384]))
+('stage2.blocks.2.attn.conv_proj_q.bn.running_var',  ([384]))
+('stage2.blocks.2.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage2.blocks.2.attn.conv_proj_k.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.2.attn.conv_proj_k.bn.weight',  ([384]))
+('stage2.blocks.2.attn.conv_proj_k.bn.bias',  ([384]))
+('stage2.blocks.2.attn.conv_proj_k.bn.running_mean',  ([384]))
+('stage2.blocks.2.attn.conv_proj_k.bn.running_var',  ([384]))
+('stage2.blocks.2.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage2.blocks.2.attn.conv_proj_v.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.2.attn.conv_proj_v.bn.weight',  ([384]))
+('stage2.blocks.2.attn.conv_proj_v.bn.bias',  ([384]))
+('stage2.blocks.2.attn.conv_proj_v.bn.running_mean',  ([384]))
+('stage2.blocks.2.attn.conv_proj_v.bn.running_var',  ([384]))
+('stage2.blocks.2.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage2.blocks.2.attn.proj_q.weight',  ([384, 384]))
+('stage2.blocks.2.attn.proj_q.bias',  ([384]))
+('stage2.blocks.2.attn.proj_k.weight',  ([384, 384]))
+('stage2.blocks.2.attn.proj_k.bias',  ([384]))
+('stage2.blocks.2.attn.proj_v.weight',  ([384, 384]))
+('stage2.blocks.2.attn.proj_v.bias',  ([384]))
+('stage2.blocks.2.attn.proj.weight',  ([384, 384]))
+('stage2.blocks.2.attn.proj.bias',  ([384]))
+('stage2.blocks.2.norm2.weight',  ([384]))
+('stage2.blocks.2.norm2.bias',  ([384]))
+('stage2.blocks.2.mlp.fc1.weight',  ([1536, 384]))
+('stage2.blocks.2.mlp.fc1.bias',  ([1536]))
+('stage2.blocks.2.mlp.fc2.weight',  ([384, 1536]))
+('stage2.blocks.2.mlp.fc2.bias',  ([384]))
+('stage2.blocks.3.norm1.weight',  ([384]))
+('stage2.blocks.3.norm1.bias',  ([384]))
+('stage2.blocks.3.attn.conv_proj_q.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.3.attn.conv_proj_q.bn.weight',  ([384]))
+('stage2.blocks.3.attn.conv_proj_q.bn.bias',  ([384]))
+('stage2.blocks.3.attn.conv_proj_q.bn.running_mean',  ([384]))
+('stage2.blocks.3.attn.conv_proj_q.bn.running_var',  ([384]))
+('stage2.blocks.3.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage2.blocks.3.attn.conv_proj_k.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.3.attn.conv_proj_k.bn.weight',  ([384]))
+('stage2.blocks.3.attn.conv_proj_k.bn.bias',  ([384]))
+('stage2.blocks.3.attn.conv_proj_k.bn.running_mean',  ([384]))
+('stage2.blocks.3.attn.conv_proj_k.bn.running_var',  ([384]))
+('stage2.blocks.3.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage2.blocks.3.attn.conv_proj_v.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.3.attn.conv_proj_v.bn.weight',  ([384]))
+('stage2.blocks.3.attn.conv_proj_v.bn.bias',  ([384]))
+('stage2.blocks.3.attn.conv_proj_v.bn.running_mean',  ([384]))
+('stage2.blocks.3.attn.conv_proj_v.bn.running_var',  ([384]))
+('stage2.blocks.3.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage2.blocks.3.attn.proj_q.weight',  ([384, 384]))
+('stage2.blocks.3.attn.proj_q.bias',  ([384]))
+('stage2.blocks.3.attn.proj_k.weight',  ([384, 384]))
+('stage2.blocks.3.attn.proj_k.bias',  ([384]))
+('stage2.blocks.3.attn.proj_v.weight',  ([384, 384]))
+('stage2.blocks.3.attn.proj_v.bias',  ([384]))
+('stage2.blocks.3.attn.proj.weight',  ([384, 384]))
+('stage2.blocks.3.attn.proj.bias',  ([384]))
+('stage2.blocks.3.norm2.weight',  ([384]))
+('stage2.blocks.3.norm2.bias',  ([384]))
+('stage2.blocks.3.mlp.fc1.weight',  ([1536, 384]))
+('stage2.blocks.3.mlp.fc1.bias',  ([1536]))
+('stage2.blocks.3.mlp.fc2.weight',  ([384, 1536]))
+('stage2.blocks.3.mlp.fc2.bias',  ([384]))
+('stage2.blocks.4.norm1.weight',  ([384]))
+('stage2.blocks.4.norm1.bias',  ([384]))
+('stage2.blocks.4.attn.conv_proj_q.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.4.attn.conv_proj_q.bn.weight',  ([384]))
+('stage2.blocks.4.attn.conv_proj_q.bn.bias',  ([384]))
+('stage2.blocks.4.attn.conv_proj_q.bn.running_mean',  ([384]))
+('stage2.blocks.4.attn.conv_proj_q.bn.running_var',  ([384]))
+('stage2.blocks.4.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage2.blocks.4.attn.conv_proj_k.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.4.attn.conv_proj_k.bn.weight',  ([384]))
+('stage2.blocks.4.attn.conv_proj_k.bn.bias',  ([384]))
+('stage2.blocks.4.attn.conv_proj_k.bn.running_mean',  ([384]))
+('stage2.blocks.4.attn.conv_proj_k.bn.running_var',  ([384]))
+('stage2.blocks.4.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage2.blocks.4.attn.conv_proj_v.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.4.attn.conv_proj_v.bn.weight',  ([384]))
+('stage2.blocks.4.attn.conv_proj_v.bn.bias',  ([384]))
+('stage2.blocks.4.attn.conv_proj_v.bn.running_mean',  ([384]))
+('stage2.blocks.4.attn.conv_proj_v.bn.running_var',  ([384]))
+('stage2.blocks.4.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage2.blocks.4.attn.proj_q.weight',  ([384, 384]))
+('stage2.blocks.4.attn.proj_q.bias',  ([384]))
+('stage2.blocks.4.attn.proj_k.weight',  ([384, 384]))
+('stage2.blocks.4.attn.proj_k.bias',  ([384]))
+('stage2.blocks.4.attn.proj_v.weight',  ([384, 384]))
+('stage2.blocks.4.attn.proj_v.bias',  ([384]))
+('stage2.blocks.4.attn.proj.weight',  ([384, 384]))
+('stage2.blocks.4.attn.proj.bias',  ([384]))
+('stage2.blocks.4.norm2.weight',  ([384]))
+('stage2.blocks.4.norm2.bias',  ([384]))
+('stage2.blocks.4.mlp.fc1.weight',  ([1536, 384]))
+('stage2.blocks.4.mlp.fc1.bias',  ([1536]))
+('stage2.blocks.4.mlp.fc2.weight',  ([384, 1536]))
+('stage2.blocks.4.mlp.fc2.bias',  ([384]))
+('stage2.blocks.5.norm1.weight',  ([384]))
+('stage2.blocks.5.norm1.bias',  ([384]))
+('stage2.blocks.5.attn.conv_proj_q.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.5.attn.conv_proj_q.bn.weight',  ([384]))
+('stage2.blocks.5.attn.conv_proj_q.bn.bias',  ([384]))
+('stage2.blocks.5.attn.conv_proj_q.bn.running_mean',  ([384]))
+('stage2.blocks.5.attn.conv_proj_q.bn.running_var',  ([384]))
+('stage2.blocks.5.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage2.blocks.5.attn.conv_proj_k.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.5.attn.conv_proj_k.bn.weight',  ([384]))
+('stage2.blocks.5.attn.conv_proj_k.bn.bias',  ([384]))
+('stage2.blocks.5.attn.conv_proj_k.bn.running_mean',  ([384]))
+('stage2.blocks.5.attn.conv_proj_k.bn.running_var',  ([384]))
+('stage2.blocks.5.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage2.blocks.5.attn.conv_proj_v.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.5.attn.conv_proj_v.bn.weight',  ([384]))
+('stage2.blocks.5.attn.conv_proj_v.bn.bias',  ([384]))
+('stage2.blocks.5.attn.conv_proj_v.bn.running_mean',  ([384]))
+('stage2.blocks.5.attn.conv_proj_v.bn.running_var',  ([384]))
+('stage2.blocks.5.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage2.blocks.5.attn.proj_q.weight',  ([384, 384]))
+('stage2.blocks.5.attn.proj_q.bias',  ([384]))
+('stage2.blocks.5.attn.proj_k.weight',  ([384, 384]))
+('stage2.blocks.5.attn.proj_k.bias',  ([384]))
+('stage2.blocks.5.attn.proj_v.weight',  ([384, 384]))
+('stage2.blocks.5.attn.proj_v.bias',  ([384]))
+('stage2.blocks.5.attn.proj.weight',  ([384, 384]))
+('stage2.blocks.5.attn.proj.bias',  ([384]))
+('stage2.blocks.5.norm2.weight',  ([384]))
+('stage2.blocks.5.norm2.bias',  ([384]))
+('stage2.blocks.5.mlp.fc1.weight',  ([1536, 384]))
+('stage2.blocks.5.mlp.fc1.bias',  ([1536]))
+('stage2.blocks.5.mlp.fc2.weight',  ([384, 1536]))
+('stage2.blocks.5.mlp.fc2.bias',  ([384]))
+('stage2.blocks.6.norm1.weight',  ([384]))
+('stage2.blocks.6.norm1.bias',  ([384]))
+('stage2.blocks.6.attn.conv_proj_q.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.6.attn.conv_proj_q.bn.weight',  ([384]))
+('stage2.blocks.6.attn.conv_proj_q.bn.bias',  ([384]))
+('stage2.blocks.6.attn.conv_proj_q.bn.running_mean',  ([384]))
+('stage2.blocks.6.attn.conv_proj_q.bn.running_var',  ([384]))
+('stage2.blocks.6.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage2.blocks.6.attn.conv_proj_k.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.6.attn.conv_proj_k.bn.weight',  ([384]))
+('stage2.blocks.6.attn.conv_proj_k.bn.bias',  ([384]))
+('stage2.blocks.6.attn.conv_proj_k.bn.running_mean',  ([384]))
+('stage2.blocks.6.attn.conv_proj_k.bn.running_var',  ([384]))
+('stage2.blocks.6.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage2.blocks.6.attn.conv_proj_v.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.6.attn.conv_proj_v.bn.weight',  ([384]))
+('stage2.blocks.6.attn.conv_proj_v.bn.bias',  ([384]))
+('stage2.blocks.6.attn.conv_proj_v.bn.running_mean',  ([384]))
+('stage2.blocks.6.attn.conv_proj_v.bn.running_var',  ([384]))
+('stage2.blocks.6.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage2.blocks.6.attn.proj_q.weight',  ([384, 384]))
+('stage2.blocks.6.attn.proj_q.bias',  ([384]))
+('stage2.blocks.6.attn.proj_k.weight',  ([384, 384]))
+('stage2.blocks.6.attn.proj_k.bias',  ([384]))
+('stage2.blocks.6.attn.proj_v.weight',  ([384, 384]))
+('stage2.blocks.6.attn.proj_v.bias',  ([384]))
+('stage2.blocks.6.attn.proj.weight',  ([384, 384]))
+('stage2.blocks.6.attn.proj.bias',  ([384]))
+('stage2.blocks.6.norm2.weight',  ([384]))
+('stage2.blocks.6.norm2.bias',  ([384]))
+('stage2.blocks.6.mlp.fc1.weight',  ([1536, 384]))
+('stage2.blocks.6.mlp.fc1.bias',  ([1536]))
+('stage2.blocks.6.mlp.fc2.weight',  ([384, 1536]))
+('stage2.blocks.6.mlp.fc2.bias',  ([384]))
+('stage2.blocks.7.norm1.weight',  ([384]))
+('stage2.blocks.7.norm1.bias',  ([384]))
+('stage2.blocks.7.attn.conv_proj_q.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.7.attn.conv_proj_q.bn.weight',  ([384]))
+('stage2.blocks.7.attn.conv_proj_q.bn.bias',  ([384]))
+('stage2.blocks.7.attn.conv_proj_q.bn.running_mean',  ([384]))
+('stage2.blocks.7.attn.conv_proj_q.bn.running_var',  ([384]))
+('stage2.blocks.7.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage2.blocks.7.attn.conv_proj_k.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.7.attn.conv_proj_k.bn.weight',  ([384]))
+('stage2.blocks.7.attn.conv_proj_k.bn.bias',  ([384]))
+('stage2.blocks.7.attn.conv_proj_k.bn.running_mean',  ([384]))
+('stage2.blocks.7.attn.conv_proj_k.bn.running_var',  ([384]))
+('stage2.blocks.7.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage2.blocks.7.attn.conv_proj_v.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.7.attn.conv_proj_v.bn.weight',  ([384]))
+('stage2.blocks.7.attn.conv_proj_v.bn.bias',  ([384]))
+('stage2.blocks.7.attn.conv_proj_v.bn.running_mean',  ([384]))
+('stage2.blocks.7.attn.conv_proj_v.bn.running_var',  ([384]))
+('stage2.blocks.7.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage2.blocks.7.attn.proj_q.weight',  ([384, 384]))
+('stage2.blocks.7.attn.proj_q.bias',  ([384]))
+('stage2.blocks.7.attn.proj_k.weight',  ([384, 384]))
+('stage2.blocks.7.attn.proj_k.bias',  ([384]))
+('stage2.blocks.7.attn.proj_v.weight',  ([384, 384]))
+('stage2.blocks.7.attn.proj_v.bias',  ([384]))
+('stage2.blocks.7.attn.proj.weight',  ([384, 384]))
+('stage2.blocks.7.attn.proj.bias',  ([384]))
+('stage2.blocks.7.norm2.weight',  ([384]))
+('stage2.blocks.7.norm2.bias',  ([384]))
+('stage2.blocks.7.mlp.fc1.weight',  ([1536, 384]))
+('stage2.blocks.7.mlp.fc1.bias',  ([1536]))
+('stage2.blocks.7.mlp.fc2.weight',  ([384, 1536]))
+('stage2.blocks.7.mlp.fc2.bias',  ([384]))
+('stage2.blocks.8.norm1.weight',  ([384]))
+('stage2.blocks.8.norm1.bias',  ([384]))
+('stage2.blocks.8.attn.conv_proj_q.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.8.attn.conv_proj_q.bn.weight',  ([384]))
+('stage2.blocks.8.attn.conv_proj_q.bn.bias',  ([384]))
+('stage2.blocks.8.attn.conv_proj_q.bn.running_mean',  ([384]))
+('stage2.blocks.8.attn.conv_proj_q.bn.running_var',  ([384]))
+('stage2.blocks.8.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage2.blocks.8.attn.conv_proj_k.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.8.attn.conv_proj_k.bn.weight',  ([384]))
+('stage2.blocks.8.attn.conv_proj_k.bn.bias',  ([384]))
+('stage2.blocks.8.attn.conv_proj_k.bn.running_mean',  ([384]))
+('stage2.blocks.8.attn.conv_proj_k.bn.running_var',  ([384]))
+('stage2.blocks.8.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage2.blocks.8.attn.conv_proj_v.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.8.attn.conv_proj_v.bn.weight',  ([384]))
+('stage2.blocks.8.attn.conv_proj_v.bn.bias',  ([384]))
+('stage2.blocks.8.attn.conv_proj_v.bn.running_mean',  ([384]))
+('stage2.blocks.8.attn.conv_proj_v.bn.running_var',  ([384]))
+('stage2.blocks.8.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage2.blocks.8.attn.proj_q.weight',  ([384, 384]))
+('stage2.blocks.8.attn.proj_q.bias',  ([384]))
+('stage2.blocks.8.attn.proj_k.weight',  ([384, 384]))
+('stage2.blocks.8.attn.proj_k.bias',  ([384]))
+('stage2.blocks.8.attn.proj_v.weight',  ([384, 384]))
+('stage2.blocks.8.attn.proj_v.bias',  ([384]))
+('stage2.blocks.8.attn.proj.weight',  ([384, 384]))
+('stage2.blocks.8.attn.proj.bias',  ([384]))
+('stage2.blocks.8.norm2.weight',  ([384]))
+('stage2.blocks.8.norm2.bias',  ([384]))
+('stage2.blocks.8.mlp.fc1.weight',  ([1536, 384]))
+('stage2.blocks.8.mlp.fc1.bias',  ([1536]))
+('stage2.blocks.8.mlp.fc2.weight',  ([384, 1536]))
+('stage2.blocks.8.mlp.fc2.bias',  ([384]))
+('stage2.blocks.9.norm1.weight',  ([384]))
+('stage2.blocks.9.norm1.bias',  ([384]))
+('stage2.blocks.9.attn.conv_proj_q.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.9.attn.conv_proj_q.bn.weight',  ([384]))
+('stage2.blocks.9.attn.conv_proj_q.bn.bias',  ([384]))
+('stage2.blocks.9.attn.conv_proj_q.bn.running_mean',  ([384]))
+('stage2.blocks.9.attn.conv_proj_q.bn.running_var',  ([384]))
+('stage2.blocks.9.attn.conv_proj_q.bn.num_batches_tracked',  ([]))
+('stage2.blocks.9.attn.conv_proj_k.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.9.attn.conv_proj_k.bn.weight',  ([384]))
+('stage2.blocks.9.attn.conv_proj_k.bn.bias',  ([384]))
+('stage2.blocks.9.attn.conv_proj_k.bn.running_mean',  ([384]))
+('stage2.blocks.9.attn.conv_proj_k.bn.running_var',  ([384]))
+('stage2.blocks.9.attn.conv_proj_k.bn.num_batches_tracked',  ([]))
+('stage2.blocks.9.attn.conv_proj_v.conv.weight',  ([384, 1, 3, 3]))
+('stage2.blocks.9.attn.conv_proj_v.bn.weight',  ([384]))
+('stage2.blocks.9.attn.conv_proj_v.bn.bias',  ([384]))
+('stage2.blocks.9.attn.conv_proj_v.bn.running_mean',  ([384]))
+('stage2.blocks.9.attn.conv_proj_v.bn.running_var',  ([384]))
+('stage2.blocks.9.attn.conv_proj_v.bn.num_batches_tracked',  ([]))
+('stage2.blocks.9.attn.proj_q.weight',  ([384, 384]))
+('stage2.blocks.9.attn.proj_q.bias',  ([384]))
+('stage2.blocks.9.attn.proj_k.weight',  ([384, 384]))
+('stage2.blocks.9.attn.proj_k.bias',  ([384]))
+('stage2.blocks.9.attn.proj_v.weight',  ([384, 384]))
+('stage2.blocks.9.attn.proj_v.bias',  ([384]))
+('stage2.blocks.9.attn.proj.weight',  ([384, 384]))
+('stage2.blocks.9.attn.proj.bias',  ([384]))
+('stage2.blocks.9.norm2.weight',  ([384]))
+('stage2.blocks.9.norm2.bias',  ([384]))
+('stage2.blocks.9.mlp.fc1.weight',  ([1536, 384]))
+('stage2.blocks.9.mlp.fc1.bias',  ([1536]))
+('stage2.blocks.9.mlp.fc2.weight',  ([384, 1536]))
+('stage2.blocks.9.mlp.fc2.bias',  ([384]))
+('norm.weight',  ([384]))
+('norm.bias',  ([384]))
+('head.weight',  ([1000, 384]))
+('head.bias',  ([1000]))

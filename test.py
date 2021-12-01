@@ -27,7 +27,6 @@ def torch_to_paddle_mapping(torch_model,paddle_model):
     torch_array=[]
     for i,value in torch_model.state_dict().items():
         torch_array.append((i,value.shape))
-
     for i,value in paddle_model.state_dict().items():
         paddle_array.append((i,value.shape))
 

@@ -1,6 +1,6 @@
 import paddle
 import paddle.nn as nn
-
+from functools import partial
 
 from collections.abc import Iterable
 from numpy import repeat
@@ -57,9 +57,8 @@ class LayerNorm(nn.LayerNorm):
     """Subclass torch's LayerNorm to handle fp16."""
 
     def forward(self, x: paddle.Tensor):
-        orig_type = x.dtype
-        ret = super().forward(x.type(paddle.float32))
-        return ret.type(orig_type)
+        ret = super().forward(x)
+        return ret
 class QuickGELU(nn.Layer):
     '''
     重写GELU函数，降低处理精度，提高处理速度
@@ -152,7 +151,6 @@ class ConvEmbed(nn.Layer):
         if self.norm:
             x = self.norm(x)
         x = vector2graph(x, H, W)  # 把x回归原来的形状
-       
         return x
 
 
@@ -620,10 +618,12 @@ class ConvolutionalVisionTransformer(nn.Layer):
         for i in range(self.num_stages):
             x, cls_tokens = getattr(self, f'stage{i}')(x)
         if self.cls_token:
-            
+            print(self.norm.weight)#输出全1
+            print(self.norm.bias)#输出全0
+            print(x)#输入相似，精度上存在误差
             x = self.norm(cls_tokens)
-            print(self.norm.weight[:3])
-            print(self.norm.bias[:3])
+            print(x)#输出完全不同
+            print(x[0][0][:3])
             x = paddle.squeeze(x)
         else:
             x = graph2vector(x, 'b c h w -> b (h w) c')
@@ -645,7 +645,7 @@ def generate_model(config):
         in_chans=3,
         num_classes=config.MODEL.NUM_CLASSES,
         act_layer=QuickGELU,
-        norm_layer=nn.LayerNorm,
+        norm_layer=partial(LayerNorm,epsilon=1e-5),
         init=getattr(modelspec, 'INIT', 'trunc_norm'),
         spec=modelspec)
     if config.MODEL.INIT_WEIGHTS:

@@ -529,10 +529,13 @@ class ConvolutionalVisionTransformer(nn.Module):
             x, cls_tokens = getattr(self, f'stage{i}')(x)
         
         if self.cls_token:
-            
+            #class-ConvolutionalVisionTransformer
+            print(self.norm.weight)#输出全1
+            print(self.norm.bias)#输出全0
+            print(x)#输入相似，精度上存在误差
             x = self.norm(cls_tokens)
-            print(self.norm.weight[:3])
-            print(self.norm.bias[:3])
+            print(x)#输出完全不同
+            print(x[0][0][:3])
             x = torch.squeeze(x)
             
         else:
