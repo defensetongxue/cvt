@@ -9,6 +9,7 @@ import os
 from collections import OrderedDict
 
 import numpy as np
+import paddle
 import scipy
 import torch
 import torch.nn as nn
@@ -203,11 +204,13 @@ class Attention(nn.Module):
         attn_score = torch.einsum('bhlk,bhtk->bhlt', [q, k]) * self.scale
         attn = F.softmax(attn_score, dim=-1)
         attn = self.attn_drop(attn)
-
+       
         x = torch.einsum('bhlt,bhtv->bhlv', [attn, v])
-        x = rearrange(x, 'b h t d -> b t (h d)')
 
+        x = rearrange(x, 'b h t d -> b t (h d)')
+        
         x = self.proj(x)
+        
         x = self.proj_drop(x)
         return x
 
@@ -254,13 +257,12 @@ class Block(nn.Module):
         res = x
 
         x = self.norm1(x)
-        
         attn = self.attn(x, h, w)
         
         x = res + self.drop_path(attn)
         
         x = x + self.drop_path(self.mlp(self.norm2(x)))
-        
+       
         return x
 
 
@@ -527,10 +529,10 @@ class ConvolutionalVisionTransformer(nn.Module):
             x, cls_tokens = getattr(self, f'stage{i}')(x)
         
         if self.cls_token:
-            print(x[0,0,0,:5])
+            
             x = self.norm(cls_tokens)
-            print(x[0,0,:5])
-            print(self.norm,self.norm.weight,self.norm.bias)
+            print(self.norm.weight[:3])
+            print(self.norm.bias[:3])
             x = torch.squeeze(x)
             
         else:

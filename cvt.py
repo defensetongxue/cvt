@@ -320,7 +320,7 @@ class Attention(nn.Layer):
 
         x = self.proj(x)
         x = self.proj_drop(x)
-
+        #ok
         return x  # b,t,(h,d)
 
 
@@ -369,7 +369,7 @@ class Block(nn.Layer):
         res = x
 
         x = self.norm1(x)
-        
+      
         attn = self.attn(x, h, w)
         
         x = res + self.drop_path(attn)
@@ -620,10 +620,10 @@ class ConvolutionalVisionTransformer(nn.Layer):
         for i in range(self.num_stages):
             x, cls_tokens = getattr(self, f'stage{i}')(x)
         if self.cls_token:
-            print(x[0,0,0,:5])
+            
             x = self.norm(cls_tokens)
-            print(x[0,0,:5])
-            print(self.norm,self.norm.weight,self.norm.bias)
+            print(self.norm.weight[:3])
+            print(self.norm.bias[:3])
             x = paddle.squeeze(x)
         else:
             x = graph2vector(x, 'b c h w -> b (h w) c')
