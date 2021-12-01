@@ -209,7 +209,6 @@ class Attention(nn.Module):
 
         x = self.proj(x)
         x = self.proj_drop(x)
-
         return x
 
 
@@ -251,13 +250,17 @@ class Block(nn.Module):
         )
 
     def forward(self, x, h, w):
+        #ok
         res = x
 
         x = self.norm1(x)
+        
         attn = self.attn(x, h, w)
+        
         x = res + self.drop_path(attn)
+        
         x = x + self.drop_path(self.mlp(self.norm2(x)))
-
+        
         return x
 
 
@@ -289,10 +292,10 @@ class ConvEmbed(nn.Module):
         x = self.proj(x)
         B, C, H, W = x.shape
         x = rearrange(x, 'b c h w -> b (h w) c')
+       
         if self.norm:
             x = self.norm(x)
         x = rearrange(x, 'b (h w) c -> b c h w', h=H, w=W)
-
         return x
 
 
@@ -410,7 +413,7 @@ class VisionTransformer(nn.Module):
         if self.cls_token is not None:
             cls_tokens, x = torch.split(x, [1, H*W], 1)
         x = rearrange(x, 'b (h w) c -> b c h w', h=H, w=W)
-
+        
         return x, cls_tokens
 
 
@@ -522,10 +525,14 @@ class ConvolutionalVisionTransformer(nn.Module):
     def forward_features(self, x):
         for i in range(self.num_stages):
             x, cls_tokens = getattr(self, f'stage{i}')(x)
-
+        
         if self.cls_token:
+            print(x[0,0,0,:5])
             x = self.norm(cls_tokens)
+            print(x[0,0,:5])
+            print(self.norm,self.norm.weight,self.norm.bias)
             x = torch.squeeze(x)
+            
         else:
             x = rearrange(x, 'b c h w -> b (h w) c')
             x = self.norm(x)
@@ -536,7 +543,6 @@ class ConvolutionalVisionTransformer(nn.Module):
     def forward(self, x):
         x = self.forward_features(x)
         x = self.head(x)
-
         return x
 
 

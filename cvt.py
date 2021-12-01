@@ -53,7 +53,13 @@ to_3tuple = _ntuple(3)
 to_4tuple = _ntuple(4)
 to_ntuple = _ntuple
 
+class LayerNorm(nn.LayerNorm):
+    """Subclass torch's LayerNorm to handle fp16."""
 
+    def forward(self, x: paddle.Tensor):
+        orig_type = x.dtype
+        ret = super().forward(x.type(paddle.float32))
+        return ret.type(orig_type)
 class QuickGELU(nn.Layer):
     '''
     重写GELU函数，降低处理精度，提高处理速度
@@ -138,13 +144,15 @@ class ConvEmbed(nn.Layer):
 
     def forward(self, x):
         x = self.proj(x)
+        
         B, C, H, W = x.shape  # B个图片H*W的大小 C个通道(example：W==3:红黄蓝)
         # 对每个图片进行嵌入，相当于对每个图片线性的堆叠
         x = graph2vector(x)
+        
         if self.norm:
             x = self.norm(x)
         x = vector2graph(x, H, W)  # 把x回归原来的形状
-
+       
         return x
 
 
@@ -357,14 +365,18 @@ class Block(nn.Layer):
         )
 
     def forward(self, x, h, w):
-
+        #ok
         res = x
 
         x = self.norm1(x)
+        
         attn = self.attn(x, h, w)
+        
         x = res + self.drop_path(attn)
+        
         x = x + self.drop_path(self.mlp(self.norm2(x)))
-
+        
+        
         return x
 
 
@@ -493,7 +505,7 @@ class VisionTransformer(nn.Layer):
         if self.cls_token is not None:
             cls_tokens, x = paddle.split(x, [1, H*W], 1)
         x = vector2graph(x,  H, W)
-
+        
         return x, cls_tokens
 
 
@@ -607,9 +619,11 @@ class ConvolutionalVisionTransformer(nn.Layer):
     def forward_features(self, x):
         for i in range(self.num_stages):
             x, cls_tokens = getattr(self, f'stage{i}')(x)
-
         if self.cls_token:
+            print(x[0,0,0,:5])
             x = self.norm(cls_tokens)
+            print(x[0,0,:5])
+            print(self.norm,self.norm.weight,self.norm.bias)
             x = paddle.squeeze(x)
         else:
             x = graph2vector(x, 'b c h w -> b (h w) c')
@@ -622,7 +636,6 @@ class ConvolutionalVisionTransformer(nn.Layer):
     def forward(self, x):
         x = self.forward_features(x)
         x = self.head(x)
-
         return x
 
 
