@@ -337,6 +337,7 @@ class VisionTransformer(nn.Module):
         )
 
         with_cls_token = kwargs['with_cls_token']
+        
         if with_cls_token:
             self.cls_token = nn.Parameter(
                 torch.zeros(1, 1, embed_dim)
@@ -365,7 +366,6 @@ class VisionTransformer(nn.Module):
                 )
             )
         self.blocks = nn.ModuleList(blocks)
-
         if self.cls_token is not None:
             trunc_normal_(self.cls_token, std=.02)
 
@@ -400,22 +400,17 @@ class VisionTransformer(nn.Module):
         x = self.patch_embed(x)
         B, C, H, W = x.size()
         x = rearrange(x, 'b c h w -> b (h w) c')
-
         cls_tokens = None
         if self.cls_token is not None:
-            # stole cls_tokens impl from Phil Wang, thanks
             cls_tokens = self.cls_token.expand(B, -1, -1)
             x = torch.cat((cls_tokens, x), dim=1)
 
         x = self.pos_drop(x)
-
         for i, blk in enumerate(self.blocks):
             x = blk(x, H, W)
-
         if self.cls_token is not None:
             cls_tokens, x = torch.split(x, [1, H*W], 1)
         x = rearrange(x, 'b (h w) c -> b c h w', h=H, w=W)
-        
         return x, cls_tokens
 
 
@@ -530,12 +525,7 @@ class ConvolutionalVisionTransformer(nn.Module):
         
         if self.cls_token:
             #class-ConvolutionalVisionTransformer
-            print(self.norm.weight)#输出全1
-            print(self.norm.bias)#输出全0
-            print(x)#输入相似，精度上存在误差
             x = self.norm(cls_tokens)
-            print(x)#输出完全不同
-            print(x[0][0][:3])
             x = torch.squeeze(x)
             
         else:

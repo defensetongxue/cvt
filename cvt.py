@@ -318,7 +318,6 @@ class Attention(nn.Layer):
 
         x = self.proj(x)
         x = self.proj_drop(x)
-        #ok
         return x  # b,t,(h,d)
 
 
@@ -373,7 +372,7 @@ class Block(nn.Layer):
         x = res + self.drop_path(attn)
         
         x = x + self.drop_path(self.mlp(self.norm2(x)))
-        
+
         
         return x
 
@@ -418,9 +417,12 @@ class VisionTransformer(nn.Layer):
             embed_dim=embed_dim,
             norm_layer=norm_layer
         )
-        self.cls_token = paddle.zeros([1, 1, embed_dim])
+        
         with_cls_token = kwargs['with_cls_token']
+        
+    
         if with_cls_token:
+            self.cls_token = paddle.zeros([1, 1, embed_dim])
             trun_init = nn.initializer.TruncatedNormal(std=0.02)
             trun_init(self.cls_token)
         else:
@@ -488,22 +490,16 @@ class VisionTransformer(nn.Layer):
         x = self.patch_embed(x)
         B, C, H, W = x.shape
         x = graph2vector(x)
-
         cls_tokens = None
         if self.cls_token is not None:
-            # stole cls_tokens impl from Phil Wang, thanks
-            cls_tokens = self.cls_token.expand([B, -1, -1])
+            cls_tokens=paddle.expand(self.cls_token,[B,-1,-1])
             x = paddle.concat([cls_tokens, x], axis=1)
-
         x = self.pos_drop(x)
-
         for i, blk in enumerate(self.blocks):
             x = blk(x, H, W)
-
         if self.cls_token is not None:
             cls_tokens, x = paddle.split(x, [1, H*W], 1)
         x = vector2graph(x,  H, W)
-        
         return x, cls_tokens
 
 
@@ -618,12 +614,7 @@ class ConvolutionalVisionTransformer(nn.Layer):
         for i in range(self.num_stages):
             x, cls_tokens = getattr(self, f'stage{i}')(x)
         if self.cls_token:
-            print(self.norm.weight)#输出全1
-            print(self.norm.bias)#输出全0
-            print(x)#输入相似，精度上存在误差
             x = self.norm(cls_tokens)
-            print(x)#输出完全不同
-            print(x[0][0][:3])
             x = paddle.squeeze(x)
         else:
             x = graph2vector(x, 'b c h w -> b (h w) c')
