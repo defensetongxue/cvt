@@ -1,3 +1,21 @@
+#   Copyright (c) 2021 PPViT Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""
+Implement Transformer Class for ViT
+"""
+
 import paddle
 import paddle.nn as nn
 from functools import partial
@@ -10,23 +28,38 @@ import os
 import numpy as np
 import paddlenlp
 def graph2vector(x: paddle.Tensor):
-    #'b c h w -> b (h w) c'
+    '''
+    handle the tensor's dimension, expanding images into tensors.
+    b c h w -> b (h w) c.
+    b c h w mean the quantity of picures is b,number of channels is c.
+    each picture size is h*w.
+    '''
     B, C, H, W = x.shape
     x = paddle.transpose(x, [0, 2, 3, 1])
     x = paddle.reshape(x, [B, H*W, C])
     return x
 
 
-def vector2graph(x: paddle.Tensor, H, W):
-    'b (h w) c -> b c h w'
-    B, L, C = x.shape
+def vector2graph(x: paddle.Tensor, h, w):
+    '''
+    handle the tensor's dimension, take tensor into images.
+    b (h w) c -> b c h w.
+    b c h w mean the quantity of picures is b,number of channels is c
+    each picture size is h*w.
+    
+    '''
+    B, L, C = x.shape # L is length of tensor
     x = paddle.transpose(x, [0, 2, 1])
-    x = paddle.reshape(x, [B, C, H, W])
+    x = paddle.reshape(x, [B, C, h, w])
     return x
 
 
 def multitoken(x, h):
-    'b t (h d) -> b h t d'
+    '''
+    expand the dim of x.
+    handle the tensor's dimension, get multi-head token.
+    b t (h d) -> b h t d
+    '''
     B, T, L = x.shape
     x = paddle.reshape(x, [B, T, h, -1])
     x = paddle.transpose(x, [0, 2, 1, 3])
@@ -34,36 +67,19 @@ def multitoken(x, h):
 
 
 class RearrangeLayer(nn.Layer):
+    '''rearrange layer module
+    b c h w -> b (h w) c
+    a layer to expand x:imgaes into tensors.
+    b c h w mean the quantity of picures is b,number of channels is c
+    each picture size is h*w.
+    '''
     def forward(self, x: paddle.Tensor):
         return graph2vector(x)
 
-
-def _ntuple(n):
-    def parse(x):
-        if isinstance(x, Iterable):  # 如果已经是转换后的值，直接返回，不需要再做转换操作
-            return x
-        return tuple(repeat(x, n))
-
-    return parse
-
-
-to_1tuple = _ntuple(1)
-to_2tuple = _ntuple(2)
-to_3tuple = _ntuple(3)
-to_4tuple = _ntuple(4)
-to_ntuple = _ntuple
-
-class LayerNorm(nn.LayerNorm):
-    """Subclass torch's LayerNorm to handle fp16."""
-
-    def forward(self, x: paddle.Tensor):
-        ret = super().forward(x)
-        return ret
 class QuickGELU(nn.Layer):
     '''
-    重写GELU函数，降低处理精度，提高处理速度
+    Rewrite GELU function to increase processing speed
     '''
-
     def forward(self, x: paddle.Tensor):
         return x * nn.functional.sigmoid(1.702 * x)
 
@@ -103,9 +119,9 @@ class Mlp(nn.Layer):
 
     def _init_weights(self):
         weight_attr = paddle.ParamAttr(
-            initializer=nn.initializer.XavierUniform())  # default in pp: xavier
+            initializer=nn.initializer.XavierUniform()) 
         bias_attr = paddle.ParamAttr(
-            initializer=nn.initializer.Normal(std=1e-6))  # default in pp: zero
+            initializer=nn.initializer.Normal(std=1e-6))  
         return weight_attr, bias_attr
 
     def forward(self, x):
@@ -119,6 +135,13 @@ class Mlp(nn.Layer):
 
 class ConvEmbed(nn.Layer):
     """ Image to Conv Embedding
+    using nn.Conv2D and norm_layer to embedd the input.
+    Ops: conv -> norm.
+    Attributes:
+        conv: nn.Conv2D
+        norm: nn.LayerNorm
+    nn.LayerNorm handle thr input with one dim, so we should 
+    stretch 2D input into 1D
 
     """
 
@@ -130,8 +153,9 @@ class ConvEmbed(nn.Layer):
                  padding=2,
                  norm_layer=None):
         super().__init__()
-        patch_size = to_2tuple(patch_size)  # 把patch初始化为一个正方形,这里是(7,7)
-
+        # conv patch_size to a square,which shape is(patch_size,patch_size)
+        patch_size = tuple(repeat((patch_size), 2))
+        
         self.patch_size = patch_size
         self.proj = nn.Conv2D(
             in_chans, embed_dim,
@@ -143,33 +167,29 @@ class ConvEmbed(nn.Layer):
 
     def forward(self, x):
         x = self.proj(x)
-        
-        B, C, H, W = x.shape  # B个图片H*W的大小 C个通道(example：W==3:红黄蓝)
-        # 对每个图片进行嵌入，相当于对每个图片线性的堆叠
+        B, C, H, W = x.shape 
         x = graph2vector(x)
-        
         if self.norm:
             x = self.norm(x)
-        x = vector2graph(x, H, W)  # 把x回归原来的形状
+        x = vector2graph(x, H, W) 
         return x
 
 
 class Attention(nn.Layer):
     """ Attention module
+    Attention module for CvT.  
+    using conv to calculate q,k,v
     Attributes:
-        dim_in: numebr of input dim
-        dim_out: number of output dum
-        num_heads: 
-        qkv_bias:
-        attn_drop
-        proj_drop
-        method='dw_bn' generate projection method 
-        kernel_size=3  conv kernel size 
-        stride_kv=1 calculat k,v with conv , with paramer stride 
-        stride_q=1 calculat qwith conv , with paramer stride ,this stride can be different from stride_kv=1
-        padding_kv=1  calculat k,v with conv , with paramer paddding
-        padding_q=1 calculat q with conv , with paramer paddding
-        with_cls_token=True ,if label is given
+        num_heads: number of heads
+        qkv: a nn.Linear for q, k, v mapping
+        method: method to calculate q,k,v
+            dw_bn: nn.Conv2D -> nn.BatchNorm
+            avg: nn.AvgPool2D
+            linear: None
+        scales: 1 / sqrt(single_head_feature_dim)
+        attn_drop: dropout for attention
+        proj_drop: final dropout before output
+        out: projection of multi-head attention
     """
 
     def __init__(self,
@@ -198,7 +218,6 @@ class Attention(nn.Layer):
         self.with_cls_token = with_cls_token
 
         # calculate q,k,v with conv
-
         self.conv_proj_q = self._build_projection(
             dim_in, dim_out, kernel_size, padding_q,
             stride_q, 'linear' if method == 'avg' else method
@@ -213,13 +232,11 @@ class Attention(nn.Layer):
         )
 
         # init parameters of q,k,v
-
         self.proj_q = nn.Linear(dim_in, dim_out, bias_attr=qkv_bias)
         self.proj_k = nn.Linear(dim_in, dim_out, bias_attr=qkv_bias)
         self.proj_v = nn.Linear(dim_in, dim_out, bias_attr=qkv_bias)
 
         # init project other parameters
-
         self.attn_drop = nn.Dropout(attn_drop)
         self.proj = nn.Linear(dim_out, dim_out)
         self.proj_drop = nn.Dropout(proj_drop)
@@ -265,24 +282,19 @@ class Attention(nn.Layer):
     def forward_conv(self, x, h, w):
         if self.with_cls_token:  # spilt token from x
             cls_token, x = paddle.split(x, [1, h*w], 1)
-
         x = vector2graph(x, h, w)
-
         if self.conv_proj_q is not None:
             q = self.conv_proj_q(x)
         else:
             q = graph2vector(x)
-
         if self.conv_proj_k is not None:
             k = self.conv_proj_k(x)
         else:
             k = graph2vector(x)
-
         if self.conv_proj_v is not None:
             v = self.conv_proj_v(x)
         else:
             v = graph2vector(x)
-
         if self.with_cls_token:
             q = paddle.concat([cls_token, q], axis=1)
             k = paddle.concat([cls_token, k], axis=1)
@@ -298,7 +310,6 @@ class Attention(nn.Layer):
         ):  # if not generate q,k,v with Linear param
             q, k, v = self.forward_conv(x, h, w)
         # now q,k,v is b (h w) c
-        # 先扩宽token的维度，然后再实现mult-head，最后的结构是’b,h,t,d‘
         q = multitoken(self.proj_q(
             q), h=self.num_heads)
         k = multitoken(self.proj_k(
@@ -306,15 +317,13 @@ class Attention(nn.Layer):
         v = multitoken(self.proj_v(
             v),  h=self.num_heads)
 
-        # 先按照axis=3乘，后*scale，实现q*k/sqort(d_k),
+        # multi tensor with axis=3，then * scale，achieve the result of q*k/sqort(d_k),
         attn_score = paddlenlp.ops.einsum('bhlk,bhtk->bhlt', q, k) * self.scale
         attn = nn.functional.softmax(attn_score, axis=-1)
         attn = self.attn_drop(attn)
-        # 将attention得到概率值与value信息值相乘得到结果，结构是，b,h,t,d
         x = paddlenlp.ops.einsum('bhlt,bhtv->bhlv', attn, v)
         x = paddle.transpose(x, [0, 2, 1, 3])
         x = paddle.reshape(x, [0, 0, -1])
-        #x = PaddleRearrange(x, 'b h t d -> b t (h d)')
 
         x = self.proj(x)
         x = self.proj_drop(x)
@@ -322,9 +331,8 @@ class Attention(nn.Layer):
 
 
 class Block(nn.Layer):
-    ''' 
-    每一个Block都是
-    token -> multihead attention ( reshape token to a grap) ->Mlp->token
+    ''' Block moudule
+    Ops: token -> multihead attention (reshape token to a grap) ->Mlp->token
     '''
 
     def __init__(self,
@@ -362,29 +370,21 @@ class Block(nn.Layer):
         )
 
     def forward(self, x, h, w):
-        #ok
         res = x
-
         x = self.norm1(x)
-      
         attn = self.attn(x, h, w)
-        
         x = res + self.drop_path(attn)
-        
         x = x + self.drop_path(self.mlp(self.norm2(x)))
-
-        
         return x
 
 
 class VisionTransformer(nn.Layer):
-    """ Vision Transformer with support for patch or hybrid CNN input stage
-
-        输入是图片，输出是特征图和cls_token
-        图片数据先经过ConvEmbed，得到一个特征图
-        然后这个特征图会被reshape成token
-        这个token会组合上cls_token，一起送入堆叠Block中，输出token
-        最后会将这个token分离出cls_token和图片数据token，然后将图片数据reshape成图片数据的特征图
+    """ VisionTransformer moudule
+    Vision Transformer with support for patch or hybrid CNN input stage
+    Ops:intput -> conv_embed -> depth*block -> out
+    Attribute:
+        input: raw picture
+        out: features,cls_token 
 
     """
 
@@ -429,7 +429,6 @@ class VisionTransformer(nn.Layer):
             self.cls_token = None
 
         self.pos_drop = nn.Dropout(p=drop_rate)
-        # stochastic depth decay rule
         dpr = [x.item() for x in paddle.linspace(0, drop_path_rate, depth)]
 
         blocks = []
@@ -504,6 +503,35 @@ class VisionTransformer(nn.Layer):
 
 
 class ConvolutionalVisionTransformer(nn.Layer):
+    '''Cvt moudule
+    using Convolutional Neural Network in attention moudule and embedding  
+    Args:
+        
+        in_chans: int, input image channels, default: 3
+        num_classes: int, number of classes for classification, default: 1000
+        act_layer: layer, activate layer of Mlp layer, default: nn.GELU
+        norm_layer: layer, norm layer of embedding layer, default: nn.LayerNorm
+        init: str, method tof init norm weight and bias, 'trunc_norm' or 'xavier', default: 'trunc_norm'
+        spec:
+            patch_size:int, patch size, default: 16
+            patch_stride: int, patch_stride ,default: 16
+            patch_padding:int,patch padding,default: 0
+            embed_dim: int, mbedding dimension (patch embed out dim), default: 768
+            depth: int, number ot transformer blocks, default: 12
+            num_heads: int, number of attention heads, default: 1000
+            mlp_ratio: float, ratio of mlp hidden dim to embed dim(mlp in dim), default: 4.0
+            qkv_bias:: bool, If True, enable qkv(nn.Linear) layer with bias, default: false
+            drop_rate: float, Mlp layer's droppath rate for droppath layers, default: 0
+            attn_drop_rate: float, attrntion layer's droppath rate for droppath layers, default: 0
+            drop_path_rate: float,each block's droppath rate for droppath layers, default: 0
+            with_cls_token: bool, if image have cls_token, default: True
+            method: method: str, method to calculate q,k,v, default: 'dw_bn
+            kernel_size: int ,kernel size, default: 3
+            padding_q: int, padding of conv in calculating q, default: 1
+            padding_kv: int, padding of conv in calculating kv, default: 1
+            stride_kv: int, stride of conv in calculating kv, default: 1
+            stride_q:int, stride of conv in calculating q, default: 1
+    '''
     def __init__(self,
                  in_chans=3,
                  num_classes=1000,
@@ -636,7 +664,7 @@ def generate_model(config):
         in_chans=3,
         num_classes=config.MODEL.NUM_CLASSES,
         act_layer=QuickGELU,
-        norm_layer=partial(LayerNorm,epsilon=1e-5),
+        norm_layer=partial(nn.LayerNorm,epsilon=1e-5),
         init=getattr(modelspec, 'INIT', 'trunc_norm'),
         spec=modelspec)
     if config.MODEL.INIT_WEIGHTS:
