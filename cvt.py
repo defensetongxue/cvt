@@ -27,6 +27,8 @@ import logging
 import os
 import numpy as np
 import paddlenlp
+
+
 def graph2vector(x: paddle.Tensor):
     '''
     handle the tensor's dimension, expanding images into tensors.
@@ -46,9 +48,9 @@ def vector2graph(x: paddle.Tensor, h, w):
     b (h w) c -> b c h w.
     b c h w mean the quantity of picures is b,number of channels is c
     each picture size is h*w.
-    
+
     '''
-    B, L, C = x.shape # L is length of tensor
+    B, L, C = x.shape  # L is length of tensor
     x = paddle.transpose(x, [0, 2, 1])
     x = paddle.reshape(x, [B, C, h, w])
     return x
@@ -73,13 +75,16 @@ class RearrangeLayer(nn.Layer):
     b c h w mean the quantity of picures is b,number of channels is c
     each picture size is h*w.
     '''
+
     def forward(self, x: paddle.Tensor):
         return graph2vector(x)
+
 
 class QuickGELU(nn.Layer):
     '''
     Rewrite GELU function to increase processing speed
     '''
+
     def forward(self, x: paddle.Tensor):
         return x * nn.functional.sigmoid(1.702 * x)
 
@@ -119,9 +124,9 @@ class Mlp(nn.Layer):
 
     def _init_weights(self):
         weight_attr = paddle.ParamAttr(
-            initializer=nn.initializer.XavierUniform()) 
+            initializer=nn.initializer.XavierUniform())
         bias_attr = paddle.ParamAttr(
-            initializer=nn.initializer.Normal(std=1e-6))  
+            initializer=nn.initializer.Normal(std=1e-6))
         return weight_attr, bias_attr
 
     def forward(self, x):
@@ -140,7 +145,7 @@ class ConvEmbed(nn.Layer):
     Attributes:
         conv: nn.Conv2D
         norm: nn.LayerNorm
-    nn.LayerNorm handle thr input with one dim, so we should 
+    nn.LayerNorm handle thr input with one dim, so we should
     stretch 2D input into 1D
 
     """
@@ -155,7 +160,7 @@ class ConvEmbed(nn.Layer):
         super().__init__()
         # conv patch_size to a square,which shape is(patch_size,patch_size)
         patch_size = tuple(repeat((patch_size), 2))
-        
+
         self.patch_size = patch_size
         self.proj = nn.Conv2D(
             in_chans, embed_dim,
@@ -167,17 +172,17 @@ class ConvEmbed(nn.Layer):
 
     def forward(self, x):
         x = self.proj(x)
-        B, C, H, W = x.shape 
+        B, C, H, W = x.shape
         x = graph2vector(x)
         if self.norm:
             x = self.norm(x)
-        x = vector2graph(x, H, W) 
+        x = vector2graph(x, H, W)
         return x
 
 
 class Attention(nn.Layer):
     """ Attention module
-    Attention module for CvT.  
+    Attention module for CvT.
     using conv to calculate q,k,v
     Attributes:
         num_heads: number of heads
@@ -384,7 +389,7 @@ class VisionTransformer(nn.Layer):
     Ops:intput -> conv_embed -> depth*block -> out
     Attribute:
         input: raw picture
-        out: features,cls_token 
+        out: features,cls_token
 
     """
 
@@ -417,10 +422,9 @@ class VisionTransformer(nn.Layer):
             embed_dim=embed_dim,
             norm_layer=norm_layer
         )
-        
+
         with_cls_token = kwargs['with_cls_token']
-        
-    
+
         if with_cls_token:
             self.cls_token = paddle.zeros([1, 1, embed_dim])
             trun_init = nn.initializer.TruncatedNormal(std=0.02)
@@ -491,7 +495,7 @@ class VisionTransformer(nn.Layer):
         x = graph2vector(x)
         cls_tokens = None
         if self.cls_token is not None:
-            cls_tokens=paddle.expand(self.cls_token,[B,-1,-1])
+            cls_tokens = paddle.expand(self.cls_token, [B, -1, -1])
             x = paddle.concat([cls_tokens, x], axis=1)
         x = self.pos_drop(x)
         for i, blk in enumerate(self.blocks):
@@ -504,81 +508,79 @@ class VisionTransformer(nn.Layer):
 
 class ConvolutionalVisionTransformer(nn.Layer):
     '''Cvt moudule
-    using Convolutional Neural Network in attention moudule and embedding  
+    using Convolutional Neural Network in attention moudule and embedding
     Args:
-        
+
         in_chans: int, input image channels, default: 3
         num_classes: int, number of classes for classification, default: 1000
-        act_layer: layer, activate layer of Mlp layer, default: nn.GELU
-        norm_layer: layer, norm layer of embedding layer, default: nn.LayerNorm
-        init: str, method tof init norm weight and bias, 'trunc_norm' or 'xavier', default: 'trunc_norm'
-        spec:
-            patch_size:int, patch size, default: 16
-            patch_stride: int, patch_stride ,default: 16
-            patch_padding:int,patch padding,default: 0
-            embed_dim: int, mbedding dimension (patch embed out dim), default: 768
-            depth: int, number ot transformer blocks, default: 12
-            num_heads: int, number of attention heads, default: 1000
-            mlp_ratio: float, ratio of mlp hidden dim to embed dim(mlp in dim), default: 4.0
-            qkv_bias:: bool, If True, enable qkv(nn.Linear) layer with bias, default: false
-            drop_rate: float, Mlp layer's droppath rate for droppath layers, default: 0
-            attn_drop_rate: float, attrntion layer's droppath rate for droppath layers, default: 0
-            drop_path_rate: float,each block's droppath rate for droppath layers, default: 0
-            with_cls_token: bool, if image have cls_token, default: True
-            method: method: str, method to calculate q,k,v, default: 'dw_bn
-            kernel_size: int ,kernel size, default: 3
-            padding_q: int, padding of conv in calculating q, default: 1
-            padding_kv: int, padding of conv in calculating kv, default: 1
-            stride_kv: int, stride of conv in calculating kv, default: 1
-            stride_q:int, stride of conv in calculating q, default: 1
+        num_stage: int, numebr of stage, length of array of parameters should be given, default:3 
+        patch_size: int[], patch size, default: [7, 3, 3]
+        patch_stride: int[], patch_stride ,default: [4, 2, 2]
+        patch_padding: int[],patch padding,default: [2, 1, 1]
+        embed_dim: int[], mbedding dimension (patch embed out dim), default: [64, 192, 384]
+        depth: int[], number ot transformer blocks, default: [1, 2, 10]
+        num_heads: int[], number of attention heads, default:[1, 3, 6]
+        drop_rate: float[], Mlp layer's droppath rate for droppath layers, default: [0.0, 0.0, 0.0]
+        attn_drop_rate: float[], attrntion layer's droppath rate for droppath layers, default: [0.0, 0.0, 0.0]
+        drop_path_rate: float[],each block's droppath rate for droppath layers, default: [0.0, 0.0, 0.1]
+        with_cls_token: bool[], if image have cls_token, default: [False, False, True]
     '''
+
     def __init__(self,
                  in_chans=3,
                  num_classes=1000,
-                 act_layer=nn.GELU,
-                 norm_layer=nn.LayerNorm,
-                 init='trunc_norm',
-                 spec=None):
+                 num_stage=3,
+                 patch_size=[7, 3, 3],
+                 patch_stride=[4, 2, 2],
+                 patch_padding=[2, 1, 1],
+                 embed_dim=[64, 192, 384],
+                 depth=[1, 2, 10],
+                 num_heads=[1, 3, 6],
+                 drop_rate=[0.0, 0.0, 0.0],
+                 attn_drop_rate=[0.0, 0.0, 0.0],
+                 drop_path_rate=[0.0, 0.0, 0.1],
+                 with_cls_token=[False, False, True],
+                 ):
         super().__init__()
         self.num_classes = num_classes
 
-        self.num_stages = spec['NUM_STAGES']
+        self.num_stages = num_stage
         for i in range(self.num_stages):
             kwargs = {
-                'patch_size': spec['PATCH_SIZE'][i],
-                'patch_stride': spec['PATCH_STRIDE'][i],
-                'patch_padding': spec['PATCH_PADDING'][i],
-                'embed_dim': spec['DIM_EMBED'][i],
-                'depth': spec['DEPTH'][i],
-                'num_heads': spec['NUM_HEADS'][i],
-                'mlp_ratio': spec['MLP_RATIO'][i],
-                'qkv_bias': spec['QKV_BIAS'][i],
-                'drop_rate': spec['DROP_RATE'][i],
-                'attn_drop_rate': spec['ATTN_DROP_RATE'][i],
-                'drop_path_rate': spec['DROP_PATH_RATE'][i],
-                'with_cls_token': spec['CLS_TOKEN'][i],
-                'method': spec['QKV_PROJ_METHOD'][i],
-                'kernel_size': spec['KERNEL_QKV'][i],
-                'padding_q': spec['PADDING_Q'][i],
-                'padding_kv': spec['PADDING_KV'][i],
-                'stride_kv': spec['STRIDE_KV'][i],
-                'stride_q': spec['STRIDE_Q'][i],
+                'patch_size': patch_size[i],
+                'patch_stride': patch_stride[i],
+                'patch_padding': patch_padding[i],
+                'embed_dim': embed_dim[i],
+                'depth': depth[i],
+                'num_heads': num_heads[i],
+                'mlp_ratio': 4.0,
+                'qkv_bias': True,
+                'drop_rate': drop_rate[i],
+                'attn_drop_rate': attn_drop_rate[i],
+                'drop_path_rate': drop_path_rate[i],
+                'with_cls_token': with_cls_token[i],
+                'method': 'dw_bn',
+                'kernel_size': 3,
+                'padding_q': 1,
+                'padding_kv': 1,
+                'stride_kv': 2,
+                'stride_q': 1,
             }
 
             stage = VisionTransformer(
                 in_chans=in_chans,
-                init=init,
-                act_layer=act_layer,
-                norm_layer=norm_layer,
+                init='trunc_norm',
+                act_layer=QuickGELU,
+                norm_layer=nn.LayerNorm,
                 **kwargs
             )
             setattr(self, f'stage{i}', stage)
 
-            in_chans = spec['DIM_EMBED'][i]
+            in_chans = embed_dim[i]
 
-        dim_embed = spec['DIM_EMBED'][-1]
-        self.norm = norm_layer(dim_embed)
-        self.cls_token = spec['CLS_TOKEN'][-1]
+        dim_embed = embed_dim[-1]
+        self.norm = nn.LayerNorm(dim_embed)
+        self.cls_token = with_cls_token[-1]
 
         # Classifier head
         self.head = nn.Linear(
@@ -650,23 +652,29 @@ class ConvolutionalVisionTransformer(nn.Layer):
             x = paddle.mean(x, axis=1)
 
         return x
-    
-        return x
+
     def forward(self, x):
         x = self.forward_features(x)
         x = self.head(x)
         return x
 
 
-def generate_model(config):
-    modelspec = config.MODEL.SPEC
+def build_cvt(config):
     model = ConvolutionalVisionTransformer(
         in_chans=3,
         num_classes=config.MODEL.NUM_CLASSES,
-        act_layer=QuickGELU,
-        norm_layer=partial(nn.LayerNorm,epsilon=1e-5),
-        init=getattr(modelspec, 'INIT', 'trunc_norm'),
-        spec=modelspec)
+        num_stage=config.MODEL.NUM_STAGES,
+        patch_size=config.MODEL.PATCH_SIZE,
+        patch_stride=config.MODEL.PATCH_STRIDE,
+        patch_padding=config.MODEL.PATCH_PADDING,
+        embed_dim=config.MODEL.DIM_EMBED,
+        depth=config.MODEL.DEPTH,
+        num_heads=config.MODEL.NUM_HEADS,
+        drop_rate=config.MODEL.DROP_RATE,
+        attn_drop_rate=config.MODEL.ATTN_DROP_RATE,
+        drop_path_rate=config.MODEL.DROP_PATH_RATE,
+        with_cls_token=config.MODEL.CLS_TOKEN
+    )
     if config.MODEL.INIT_WEIGHTS:
         model.init_weights(
             config.MODEL.PRETRAINED,
