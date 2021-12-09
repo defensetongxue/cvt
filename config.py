@@ -13,8 +13,10 @@
 # limitations under the License.
 
 """Configuration
+
 Configuration for data, model archtecture, and training, etc.
 Config can be set by .yaml file or by argparser(limited usage)
+
 """
 
 import os
@@ -22,33 +24,19 @@ from yacs.config import CfgNode as CN
 import yaml
 
 _C = CN()
-
 _C.BASE = ['']
-_C.NAME = ''
-_C.DATA_DIR = ''
-_C.DIST_BACKEND = 'nccl'
-_C.GPUS = (0,)
-# _C.LOG_DIR = ''
-_C.MULTIPROCESSING_DISTRIBUTED = True
-_C.OUTPUT_DIR = ''
-_C.PIN_MEMORY = True
-_C.PRINT_FREQ = 20
-_C.RANK = 0
-_C.VERBOSE = True
-_C.WORKERS = 4
-_C.MODEL_SUMMARY = False
 
-_C.AMP = CN()
-_C.AMP.ENABLED = False
-_C.AMP.MEMORY_FORMAT = 'nchw'
+# data settings
+_C.DATA = CN()
+_C.DATA.BATCH_SIZE = 8 #1024 batch_size for single GPU
+_C.DATA.BATCH_SIZE_EVAL = 8 #1024 batch_size for single GPU
+_C.DATA.DATA_PATH = '/dataset/imagenet/' # path to dataset
+_C.DATA.DATASET = 'imagenet2012' # dataset name
+_C.DATA.IMAGE_SIZE = 256 # input image size
+_C.DATA.CROP_PCT = 0.94 # input image scale ratio, scale is applied before centercrop in eval mode
+_C.DATA.NUM_WORKERS = 4 # number of data loading threads
 
-# Cudnn related params
-_C.CUDNN = CN()
-_C.CUDNN.BENCHMARK = True
-_C.CUDNN.DETERMINISTIC = False
-_C.CUDNN.ENABLED = True
-
-# common params for NETWORK
+# model settings
 _C.MODEL = CN()
 _C.MODEL.NAME = 'cvt'
 _C.MODEL.INIT_WEIGHTS = True
@@ -67,112 +55,76 @@ _C.MODEL.ATTN_DROP_RATE=[0.0, 0.0, 0.0]
 _C.MODEL.DROP_PATH_RATE=[0.0, 0.0, 0.1]
 _C.MODEL.CLS_TOKEN=[False, False, True]
 
-
-_C.LOSS = CN(new_allowed=True)
-_C.LOSS.LABEL_SMOOTHING = 0.0
-_C.LOSS.LOSS = 'softmax'
-
-# DATASET related params
-_C.DATASET = CN()
-_C.DATASET.ROOT = ''
-_C.DATASET.DATASET = 'imagenet'
-_C.DATASET.TRAIN_SET = 'train'
-_C.DATASET.TEST_SET = 'val'
-_C.DATASET.DATA_FORMAT = 'jpg'
-_C.DATASET.LABELMAP = ''
-_C.DATASET.TRAIN_TSV_LIST = []
-_C.DATASET.TEST_TSV_LIST = []
-_C.DATASET.SAMPLER = 'default'
-
-_C.DATASET.TARGET_SIZE = -1
-
-# training data augmentation
-_C.INPUT = CN()
-_C.INPUT.MEAN = [0.485, 0.456, 0.406]
-_C.INPUT.STD = [0.229, 0.224, 0.225]
-
-# data augmentation
-_C.AUG = CN()
-_C.AUG.SCALE = (0.08, 1.0)
-_C.AUG.RATIO = (3.0/4.0, 4.0/3.0)
-_C.AUG.COLOR_JITTER = [0.4, 0.4, 0.4, 0.1, 0.0]
-_C.AUG.GRAY_SCALE = 0.0
-_C.AUG.GAUSSIAN_BLUR = 0.0
-_C.AUG.DROPBLOCK_LAYERS = [3, 4]
-_C.AUG.DROPBLOCK_KEEP_PROB = 1.0
-_C.AUG.DROPBLOCK_BLOCK_SIZE = 7
-_C.AUG.MIXUP_PROB = 0.0
-_C.AUG.MIXUP = 0.0
-_C.AUG.MIXCUT = 0.0
-_C.AUG.MIXCUT_MINMAX = []
-_C.AUG.MIXUP_SWITCH_PROB = 0.5
-_C.AUG.MIXUP_MODE = 'batch'
-_C.AUG.MIXCUT_AND_MIXUP = False
-_C.AUG.INTERPOLATION = 2
-_C.AUG.TIMM_AUG = CN(new_allowed=True)
-_C.AUG.TIMM_AUG.USE_LOADER = False
-_C.AUG.TIMM_AUG.USE_TRANSFORM = False
-
-# train
+# training settings
 _C.TRAIN = CN()
+_C.TRAIN.LAST_EPOCH = 0
+_C.TRAIN.NUM_EPOCHS = 300
+_C.TRAIN.WARMUP_EPOCHS = 3
+_C.TRAIN.WEIGHT_DECAY = 0.01
+_C.TRAIN.BASE_LR = 0.002
+_C.TRAIN.WARMUP_START_LR = 0.0002
+_C.TRAIN.END_LR = 0.0002
+_C.TRAIN.GRAD_CLIP = None
+_C.TRAIN.ACCUM_ITER = 1
+_C.TRAIN.MODEL_EMA = True
+_C.TRAIN.MODEL_EMA_DECAY = 0.99996
+_C.TRAIN.LINEAR_SCALED_LR = None
 
-_C.TRAIN.AUTO_RESUME = True
-_C.TRAIN.CHECKPOINT = ''
-_C.TRAIN.LR_SCHEDULER = CN(new_allowed=True)
-_C.TRAIN.SCALE_LR = True
-_C.TRAIN.LR = 0.001
+_C.TRAIN.LR_SCHEDULER = CN()
+_C.TRAIN.LR_SCHEDULER.NAME = 'warmupcosine'
+_C.TRAIN.LR_SCHEDULER.MILESTONES = "30, 60, 90" # only used in StepLRScheduler
+_C.TRAIN.LR_SCHEDULER.DECAY_EPOCHS = 30 # only used in StepLRScheduler
+_C.TRAIN.LR_SCHEDULER.DECAY_RATE = 0.1 # only used in StepLRScheduler
 
-_C.TRAIN.OPTIMIZER = 'sgd'
-_C.TRAIN.OPTIMIZER_ARGS = CN(new_allowed=True)
-_C.TRAIN.MOMENTUM = 0.9
-_C.TRAIN.WD = 0.0001
-_C.TRAIN.WITHOUT_WD_LIST = []
-_C.TRAIN.NESTEROV = True
-# for adam
-_C.TRAIN.GAMMA1 = 0.99
-_C.TRAIN.GAMMA2 = 0.0
+_C.TRAIN.OPTIMIZER = CN()
+_C.TRAIN.OPTIMIZER.NAME = 'AdamW'
+_C.TRAIN.OPTIMIZER.EPS = 1e-8
+_C.TRAIN.OPTIMIZER.BETAS = (0.9, 0.999)  # for adamW
+_C.TRAIN.OPTIMIZER.MOMENTUM = 0.9
 
-_C.TRAIN.BEGIN_EPOCH = 0
-_C.TRAIN.END_EPOCH = 100
+# train augmentation
+_C.TRAIN.MIXUP_ALPHA = 0.8
+_C.TRAIN.CUTMIX_ALPHA = 1.0
+_C.TRAIN.CUTMIX_MINMAX = None
+_C.TRAIN.MIXUP_PROB = 1.0
+_C.TRAIN.MIXUP_SWITCH_PROB = 0.5
+_C.TRAIN.MIXUP_MODE = 'batch'
 
-_C.TRAIN.IMAGE_SIZE = [224, 224]  # width * height, ex: 192 * 256
-_C.TRAIN.BATCH_SIZE_PER_GPU = 32
-_C.TRAIN.SHUFFLE = True
+_C.TRAIN.SMOOTHING = 0.1
+_C.TRAIN.COLOR_JITTER = 0.4
+_C.TRAIN.AUTO_AUGMENT = True #'rand-m9-mstd0.5-inc1'
 
-_C.TRAIN.EVAL_BEGIN_EPOCH = 0
+_C.TRAIN.RANDOM_ERASE_PROB = 0.25
+_C.TRAIN.RANDOM_ERASE_MODE = 'pixel'
+_C.TRAIN.RANDOM_ERASE_COUNT = 1
+_C.TRAIN.RANDOM_ERASE_SPLIT = False
 
-_C.TRAIN.DETECT_ANOMALY = False
+# augmentation
+_C.AUG = CN()
+_C.AUG.COLOR_JITTER = 0.4 # color jitter factor
+_C.AUG.AUTO_AUGMENT = 'rand-m9-mstd0.5-inc1'
+_C.AUG.RE_PROB = 0.25 # random earse prob
+_C.AUG.RE_MODE = 'pixel' # random earse mode
+_C.AUG.RE_COUNT = 1 # random earse count
+_C.AUG.MIXUP = 0.8 # mixup alpha, enabled if >0
+_C.AUG.CUTMIX = 1.0 # cutmix alpha, enabled if >0
+_C.AUG.CUTMIX_MINMAX = None # cutmix min/max ratio, overrides alpha
+_C.AUG.MIXUP_PROB = 1.0 # prob of mixup or cutmix when either/both is enabled
+_C.AUG.MIXUP_SWITCH_PROB = 0.5 # prob of switching cutmix when both mixup and cutmix enabled
+_C.AUG.MIXUP_MODE = 'batch' #how to apply mixup/curmix params, per 'batch', 'pair', or 'elem'
 
-_C.TRAIN.CLIP_GRAD_NORM = 0.0
-_C.TRAIN.SAVE_ALL_MODELS = False
+# misc
+_C.SAVE = "./output"
+_C.TAG = "default"
+_C.SAVE_FREQ = 1 # freq to save chpt
+_C.REPORT_FREQ = 50 # freq to logging info
+_C.VALIDATE_FREQ = 10 # freq to do validation
+_C.SEED = 0
+_C.EVAL = False # run evaluation only
+_C.AMP = False # mix precision training
+_C.LOCAL_RANK = 0
+_C.NGPUS = -1
 
-# testing
-_C.TEST = CN()
-
-# size of images for each device
-_C.TEST.BATCH_SIZE_PER_GPU = 32
-_C.TEST.CENTER_CROP = True
-_C.TEST.IMAGE_SIZE = [224, 224]  # width * height, ex: 192 * 256
-_C.TEST.INTERPOLATION = 2
-_C.TEST.MODEL_FILE = ''
-_C.TEST.REAL_LABELS = False
-_C.TEST.VALID_LABELS = ''
-
-_C.FINETUNE = CN()
-_C.FINETUNE.FINETUNE = False
-_C.FINETUNE.USE_TRAIN_AUG = False
-_C.FINETUNE.BASE_LR = 0.003
-_C.FINETUNE.BATCH_SIZE = 512
-_C.FINETUNE.EVAL_EVERY = 3000
-_C.FINETUNE.TRAIN_MODE = True
-# _C.FINETUNE.MODEL_FILE = ''
-_C.FINETUNE.FROZEN_LAYERS = []
-_C.FINETUNE.LR_SCHEDULER = CN(new_allowed=True)
-_C.FINETUNE.LR_SCHEDULER.DECAY_TYPE = 'step'
-
-# debug
-_C.DEBUG = CN()
-_C.DEBUG.DEBUG = False
 
 def _update_config_from_file(config, cfg_file):
     config.defrost()
