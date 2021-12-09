@@ -18,15 +18,10 @@ Implement Transformer Class for ViT
 
 import paddle
 import paddle.nn as nn
-from functools import partial
 
-from collections.abc import Iterable
 from numpy import repeat
-
-import logging
 import os
-import numpy as np
-import paddlenlp
+import logging
 
 
 def graph2vector(x: paddle.Tensor):
@@ -323,9 +318,10 @@ class Attention(nn.Layer):
             v),  h=self.num_heads)
 
         # multi tensor with axis=3，then * scale，achieve the result of q*k/sqort(d_k),
-        attn_score = paddlenlp.ops.einsum('bhlk,bhtk->bhlt', q, k) * self.scale
+        attn_score = paddle.matmul( q,paddle.transpose( k,[0,1,3,2])) * self.scale#'bhlk,bhtk->bhlt',
         attn = nn.functional.softmax(attn_score, axis=-1)
         attn = self.attn_drop(attn)
+
         x = paddlenlp.ops.einsum('bhlt,bhtv->bhlv', attn, v)
         x = paddle.transpose(x, [0, 2, 1, 3])
         x = paddle.reshape(x, [0, 0, -1])
